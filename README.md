@@ -37,6 +37,13 @@ Jotaay est une plateforme légère de messagerie personnelle conçue pour des é
 - Ousseynou SECK
 - NDEYE M GUEYE
 
+### Codes Couleurs utilisés
+- #FEFCFB
+- #1282A2
+- #034078
+- #001F54
+- #0A1128
+
 ### Comment obtenir le projet
 bash ```
     git clone https://github.com/OmarDIOP0/jotaay
