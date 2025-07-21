@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/users.xsd">
+    <user>
+            <id>6871a82975833</id>
+            <prenom>Yacine</prenom>
+            <nom>GUEYE</nom>
+            <sexe>M</sexe>
+            <age>20</age>
+            <telephone>777777777</telephone>
+            <mdp>$2y$10$b2PmMk70nQjcrQCY0qXopeaA3NqnDuAdWrxE2DMqT4mNnR/e7dfy6</mdp>
+            <profile_photo>6875689a5f07c_3.jfif</profile_photo>
+        </user>
+        <user>
+            <id>6871aa2634117</id>
+            <prenom>Assy</prenom>
+            <nom>NDIAYE</nom>
+            <sexe>F</sexe>
+            <age>18</age>
+            <telephone>700000000</telephone>
+            <mdp>$2y$10$kJO8pmP1cftuX1mBi.YHB.j6S5uCqfx5KKWfBjrQUc0PLb.iEL./m</mdp>
+            <profile_photo>6871ba7449088_default.png</profile_photo>
+        </user>
+        <user>
+            <id>6871ae9cd9e8d</id>
+            <prenom>Mariama</prenom>
+            <nom>DIOUM</nom>
+            <sexe>F</sexe>
+            <age>12</age>
+            <telephone>788888888</telephone>
+            <mdp>$2y$10$ttWrHIp7uTaKVhvg82SZ.OI2umPls6InQAWGoT5wklePjCpk88OHy</mdp>
+            <profile_photo>default.jpg</profile_photo>
+        </user>
+<user><id>6871d03d2ec35</id><prenom>Fatima</prenom><nom>GUEYE</nom><sexe>F</sexe><age>29</age><telephone>766666666</telephone><mdp>$2y$10$H4T99Ci81m.jA5BL2m1Onu0hHGwnj252aGvNkN64gNiPHsiGWwhee</mdp><profile_photo>default.jpg</profile_photo></user><user><id>68741d7b37f4d</id><prenom>Fatima</prenom><nom>GUEYE</nom><sexe>F</sexe><age>18</age><telephone>770123456</telephone><mdp>$2y$10$Tx2TUvyE1yxtjIezako2bewVjsGVZ5TMzn3Z8Ij8EQ41K5wmg0wH6</mdp><profile_photo>default.jpg</profile_photo></user><user><id>687ebfa069570</id><prenom>Test</prenom><nom>test</nom><sexe>M</sexe><age>24</age><telephone>771234567</telephone><mdp>$2y$10$MYctrpdfNXWIdxVADqOGY.YeW7fJMAinss8hY525EBDHRJSIyeHYO</mdp><profile_photo>687ebfa06ad30_Pharmacy Logo with Hygieia Symbol.png</profile_photo></user><user><id>687ec0a37a2f9</id><prenom>Test1</prenom><nom>Test1</nom><sexe>M</sexe><age>19</age><telephone>770000000</telephone><mdp>$2y$10$torHB9l996mNRBsL2sn/SeWfhlwtGm4qLejqNlSveXYEdZ8.s.Dg6</mdp><profile_photo>687ec0a37a31b_Capture d'écran 2025-07-18 191152.png</profile_photo></user></users>
