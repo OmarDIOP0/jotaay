@@ -6,28 +6,12 @@
                 <xs:element name="user" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="id" type="xs:string"/>
-                            <xs:element name="prenom" type="xs:string"/>
-                            <xs:element name="nom" type="xs:string"/>
-                            <xs:element name="sexe" minOccurs="0">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:enumeration value="M"/>
-                                        <xs:enumeration value="F"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="age">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:positiveInteger">
-                                        <xs:minInclusive value="12"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
+                            <xs:element name="id" type="xs:ID"/>
+                            <xs:element name="username" type="xs:string"/>
                             <xs:element name="telephone">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:pattern value="(77|70|78|76)[0-9]{7}"/>
+                                        <xs:pattern value="^(77|70|78|76)[0-9]{7}$"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
