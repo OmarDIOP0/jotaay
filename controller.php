@@ -2,7 +2,7 @@
 require_once 'config.php';
 
 // Récupérer l'utilisateur connecté
-$id_utilisateur = $_SESSION['id_utilisateur'];
+$id_utilisateur = $_SESSION['user'];
 $resultat_utilisateur = $utilisateurs->xpath("//user[id='$id_utilisateur']");
 $utilisateur_courant = $resultat_utilisateur ? $resultat_utilisateur[0] : null;
 

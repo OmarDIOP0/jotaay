@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/modern-app.css">
+    <link rel="stylesheet" href="../assets/css/modern-app.css">
 </head>
 <body>
     <?php
@@ -159,7 +159,7 @@
                 <div class="user-info">
                     <h1>WaxTaan</h1>
                     <p class="user-welcome">Bienvenue, <?php echo htmlspecialchars($utilisateur_courant->prenom . ' ' . $utilisateur_courant->nom); ?>!</p>
-                    <a href="../connexion/logout.php" class="logout-btn">
+                    <a href="../auth/logout.php" class="logout-btn">
                         <span>🚪</span>
                         Déconnexion
                     </a>
@@ -454,6 +454,6 @@
     <!-- Champ caché pour le télételephone de l'utilisateur actuel -->
     <input type="hidden" name="current_user_telephone" value="<?php echo $utilisateur_courant->telephone; ?>">
 
-    <script src="../js/global.js"></script>
+    <script src="../assets/js/global.js"></script>
 </body>
 </html>

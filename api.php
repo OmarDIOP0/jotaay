@@ -30,7 +30,7 @@ if ($messages === false) {
 }
 
 // Récupérer l'utilisateur connecté
-$id_utilisateur = $_SESSION['id_utilisateur'];
+$id_utilisateur = $_SESSION['user'];
 $utilisateur_courant = $utilisateurs->xpath("//user[id='$id_utilisateur']")[0];
 
 $_POST['utilisateurs'] = $utilisateurs;

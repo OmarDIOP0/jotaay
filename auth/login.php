@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $utilisateur->telephone == $telephone &&
             password_verify($mot_de_passe, $utilisateur->password)
         ) {
-            $_SESSION['id_utilisateur'] = (string) $utilisateur->id;
+            $_SESSION['user'] = (string) $utilisateur->id;
             header('Location: ../views/view.php');
             exit;
         }

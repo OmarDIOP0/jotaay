@@ -1,7 +1,7 @@
 <div class="profile-section">
     <div class="profile-header">
         <div class="profile-avatar">
-            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'default.jpg') { ?>
+            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'JOTAAY.png') { ?>
                 <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->photo_profil); ?>" alt="Photo de profil">
             <?php } else { ?>
                 <?php echo strtoupper(substr($utilisateur_courant->prenom, 0, 1)); ?>
