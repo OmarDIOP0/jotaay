@@ -158,7 +158,7 @@
             <div class="sidebar-header">
                 <div class="user-info">
                     <h1>WaxTaan</h1>
-                    <p class="user-welcome">Bienvenue, <?php echo htmlspecialchars($utilisateur_courant->prenom . ' ' . $utilisateur_courant->nom); ?>!</p>
+                    <p class="user-welcome">Bienvenue, <?php echo htmlspecialchars($utilisateur_courant->username); ?>!</p>
                     <a href="../auth/logout.php" class="logout-btn">
                         <span>🚪</span>
                         Déconnexion
@@ -324,7 +324,7 @@
                                 <?php if ($message->sender_id != $id_utilisateur) { ?>
                                     <div class="message-meta">
                                         <?php $sender = $utilisateurs->xpath("//user[id='{$message->sender_id}']")[0]; ?>
-                                        <span class="message-sender"><?php echo htmlspecialchars($sender->prenom . ' ' . $sender->nom); ?></span>
+                                        <span class="message-sender"><?php echo htmlspecialchars($sender->username); ?></span>
                                         <span class="message-time"><?php echo date('H:i', strtotime($message['timestamp'] ?? 'now')); ?></span>
                                     </div>
                                 <?php } ?>

@@ -4,11 +4,11 @@
             <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'JOTAAY.png') { ?>
                 <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->photo_profil); ?>" alt="Photo de profil">
             <?php } else { ?>
-                <?php echo strtoupper(substr($utilisateur_courant->prenom, 0, 1)); ?>
+                <?php echo strtoupper(substr($utilisateur_courant->username, 0, 1)); ?>
             <?php } ?>
         </div>
         <div class="profile-info">
-            <h2><?php echo htmlspecialchars($utilisateur_courant->prenom . ' ' . $utilisateur_courant->nom); ?></h2>
+            <h2><?php echo htmlspecialchars($utilisateur_courant->username); ?></h2>
             <div class="profile-telephone"><?php echo htmlspecialchars($utilisateur_courant->telephone); ?></div>
         </div>
     </div>
@@ -52,4 +52,4 @@
         </button>
     </form>
 </div>
-<script src="../js/global.js"></script>
+<script src="../assets/js/global.js"></script>

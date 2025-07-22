@@ -3,7 +3,7 @@ require_once 'config.php';
 
 // Récupérer l'utilisateur connecté
 $id_utilisateur = $_SESSION['user'];
-$resultat_utilisateur = $utilisateurs->xpath("//user[id='$id_utilisateur']");
+$resultat_utilisateur = $utilisateurs->xpath("//user[user_id='$id_utilisateur']");
 $utilisateur_courant = $resultat_utilisateur ? $resultat_utilisateur[0] : null;
 
 function obtenirIdUtilisateurParTelephone($utilisateurs, $telephone) {
@@ -12,7 +12,7 @@ function obtenirIdUtilisateurParTelephone($utilisateurs, $telephone) {
 }
 
 function obtenirTelephoneParIdUtilisateur($utilisateurs, $id_utilisateur) {
-    $utilisateur = $utilisateurs->xpath("//user[id='$id_utilisateur']")[0];
+    $utilisateur = $utilisateurs->xpath("//user[user_id='$id_utilisateur']")[0];
     return $utilisateur ? (string)$utilisateur->telephone : null;
 }
 
