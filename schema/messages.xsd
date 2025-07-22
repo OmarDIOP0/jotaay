@@ -8,8 +8,10 @@
                         <xs:sequence>
                             <xs:element name="id" type="xs:string"/>
                             <xs:element name="sender_id" type="xs:string"/>
-                            <xs:element name="recipient" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-                            <xs:element name="recipient_group" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:choice maxOccurs="unbounded">
+                                <xs:element name="recipient" type="xs:string"/>
+                                <xs:element name="recipient_group" type="xs:string"/>
+                            </xs:choice>
                             <xs:element name="content" type="xs:string"/>
                             <xs:element name="file" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
                             <xs:element name="read_by" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
