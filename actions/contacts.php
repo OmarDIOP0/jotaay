@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+$utilisateurs = $_POST['utilisateurs'];
+$contacts = $_POST['contacts'];
+$id_utilisateur = $_POST['id_utilisateur'];
+$utilisateur_courant = $_POST['utilisateur_courant'];
 $action = $_POST['action'];
 
 switch($action){

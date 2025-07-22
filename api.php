@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Gestion robuste de la session pour AJAX
 if (!isset($_SESSION['id_utilisateur']) || empty($_SESSION['id_utilisateur'])) {
     if (isset($_GET['action']) && in_array($_GET['action'], ['lister_membres', 'obtenir_membres_groupe'])) {
         http_response_code(401);
@@ -34,28 +33,34 @@ if ($messages === false) {
 $id_utilisateur = $_SESSION['id_utilisateur'];
 $utilisateur_courant = $utilisateurs->xpath("//user[id='$id_utilisateur']")[0];
 
+$_POST['utilisateurs'] = $utilisateurs;
+$_POST['contacts'] = $contacts;
+$_POST['groupes'] = $groupes;
+$_POST['messages'] = $messages;
+$_POST['id_utilisateur'] = $id_utilisateur;
+$_POST['utilisateur_courant'] = $utilisateur_courant;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
 
-    switch ($action) {
-       
+    $contact_actions = ['ajouter_contact', 'supprimer_contact', 'modifier_contact'];
+    $group_actions   = ['creer_groupe', 'supprimer_groupe','ajouter_membre', 'supprimer_membre','ajouter_coadmin', 'retirer_coadmin', 'quitter_groupe', 'lister_membres', 'obtenir_membres_groupe'];
+    $message_actions = ['envoyer_message', 'send_message'];
+    $profil_actions = ['mettre_a_jour_profil'];
 
-        
-
-        
-
-       
-
-       
-
-        
-
-
-
-
-
-       
-
+    if(in_array($action, $contact_actions)) {
+        include 'actions/contacts.php';
+    } elseif (in_array($action, $group_actions)) {
+        include 'actions/groupes.php';
+    } elseif (in_array($action, $message_actions)) {
+        include 'actions/messages.php';
+    } elseif (in_array($action, $profil_actions)) {
+        include 'actions/profil.php';
+    } else {
+        http_response_code(400);
+        echo "<p style='color:red;'>Action non reconnue.</p>";
     }
+
+
 }
 ?>
