@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WaxTaan - Messagerie du Sénégal</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/home.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,8 +20,8 @@
                     <span class="logo-text">WaxTaan</span>
                 </div>
                 <div class="nav-menu">
-                    <a href="connexion/login.php" class="nav-btn login">Se connecter</a>
-                    <a href="connexion/register.php" class="nav-btn register">S'inscrire</a>
+                    <a href="auth/login.php" class="nav-btn login">Se connecter</a>
+                    <a href="auth/register.php" class="nav-btn register">S'inscrire</a>
                 </div>
             </div>
         </nav>
@@ -151,7 +151,7 @@
         </div>
     </footer>
 
-    <script src="js/home.js"></script>
+    <script src="assets/js/home.js"></script>
 </body>
 </html>
     
