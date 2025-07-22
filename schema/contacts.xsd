@@ -6,8 +6,8 @@
                 <xs:element name="contact" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="id" type="xs:string"/>
-                            <xs:element name="user_id" type="xs:string"/>
+                            <xs:element name="contact_id" type="xs:ID"/>
+                            <xs:element name="user_id" type="xs:IDREF"/>
                             <xs:element name="contact_name" type="xs:string"/>
                             <xs:element name="contact_telephone">
                                 <xs:simpleType>

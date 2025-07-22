@@ -6,12 +6,12 @@
                 <xs:element name="user" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="id" type="xs:string"/>
+                            <xs:element name="user_id" type="xs:ID"/>
                             <xs:element name="username" type="xs:string"/>
                             <xs:element name="telephone">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:pattern value="^(77|70|78|76)[0-9]{7}$"/>
+                                        <xs:pattern value="(77|70|78|76)[0-9]{7}"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
