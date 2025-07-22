@@ -49,13 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $profil_actions = ['mettre_a_jour_profil'];
 
     if(in_array($action, $contact_actions)) {
-        include 'actions/contacts.php';
+        include 'services/contacts.php';
     } elseif (in_array($action, $group_actions)) {
-        include 'actions/groupes.php';
+        include 'services/groupes.php';
     } elseif (in_array($action, $message_actions)) {
-        include 'actions/messages.php';
+        include 'services/messages.php';
     } elseif (in_array($action, $profil_actions)) {
-        include 'actions/profil.php';
+        include 'services/profil.php';
     } else {
         http_response_code(400);
         echo "<p style='color:red;'>Action non reconnue.</p>";
