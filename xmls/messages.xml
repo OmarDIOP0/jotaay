@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <messages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/messages.xsd">
-<message timestamp="2025-07-21T01:10:00">
-    <id>687d77a0a959c</id>
-    <sender_id>6871a82975833</sender_id>
-    <content>Salut Assy</content>
-    <!-- <timestamp>2025-07-21T01:11:28</timestamp> -->
-    <read_by>6871aa2634117</read_by>
-    <recipient>700000000</recipient>
-</message>
-<message timestamp="2025-07-21T01:11:28">
-    <id>687d77f1c5efb</id>
-    <sender_id>6871a82975833</sender_id>
-    <content>Heeey girls&#13;</content>
-    <read_by>6871a82975833</read_by>
-    <recipient_group>687574af7b751</recipient_group>
-</message>
-<message timestamp="2025-07-21T01:15:00">
-    <id>687d78c8741ce</id>
-    <sender_id>6871a82975833</sender_id>
-    <content>Heey</content>
-    <!-- <timestamp>2025-07-21T01:16:24</timestamp> -->
-    <read_by/><recipient>788888888</recipient></message><message><id>687d78d4de829</id><sender_id>6871a82975833</sender_id><content>Ca va?</content><timestamp>2025-07-21T01:16:36</timestamp><read_by>6871aa2634117</read_by><recipient>700000000</recipient></message><message><id>687d79dca7c94</id><sender_id>6871aa2634117</sender_id><content>Je vais bien et toi?</content><timestamp>2025-07-21T01:21:00</timestamp><read_by/><recipient>777777777</recipient></message><message><id>687ec0d6c6827</id><sender_id>687ec0a37a2f9</sender_id><content>Bonjour</content><timestamp>2025-07-21T22:36:06</timestamp><read_by>687ebfa069570</read_by><recipient>771234567</recipient></message><message><id>687ec14981979</id><sender_id>687ebfa069570</sender_id><content>hey ça va ?&#13;
-</content><timestamp>2025-07-21T22:38:01</timestamp><read_by>687ec0a37a2f9</read_by><recipient>770000000</recipient></message></messages>
+
+ <message timestamp="2025-07-22T10:30:00">
+        <message_id>u003</message_id>
+        <sender_id>u001</sender_id>
+        <recipient>u002</recipient>
+        <recipient>u003</recipient>
+        <content>Salut les amis, on se retrouve ce soir ?</content>
+        <file>invitation.pdf</file>
+        <read_by>u002 u003</read_by>
+    </message>
+
+    <!-- Message avec plusieurs fichiers -->
+    <message timestamp="2025-07-22T13:45:00">
+        <message_id>m004</message_id>
+        <sender_id>u004</sender_id>
+        <recipient_group>u005</recipient_group>
+        <content>Voici les documents à signer.</content>
+        <file>contrat1.pdf</file>
+        <file>contrat2.pdf</file>
+        <read_by>u005</read_by>
+    </message>
+</messages>

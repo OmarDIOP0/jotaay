@@ -15,7 +15,7 @@
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:element name="mdp" type="xs:string"/>
+                            <xs:element name="password" type="xs:string"/>
                             <xs:element name="profile_photo" type="xs:string" minOccurs="0"/>
                         </xs:sequence>
                     </xs:complexType>

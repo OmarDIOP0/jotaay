@@ -8,10 +8,10 @@
                         <xs:sequence>
                             <xs:element name="group_id" type="xs:ID"/>
                             <xs:element name="group_name" type="xs:string"/>
-                            <xs:element name="admin_id" type="xs:IDREF"/>
-                            <xs:element name="coadmins" type="xs:IDREFS" minOccurs="0"/>
+                            <xs:element name="admin_id" type="xs:string"/>
+                            <xs:element name="coadmins" type="xs:string" minOccurs="0"/>
                             <xs:element name="photo_groupe" type="xs:string" minOccurs="0"/>
-                            <xs:element name="membre_id" type="xs:IDREF" maxOccurs="unbounded" minOccurs="2"/>
+                            <xs:element name="membre_id" type="xs:string" maxOccurs="unbounded" minOccurs="2"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

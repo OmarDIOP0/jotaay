@@ -7,7 +7,7 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="contact_id" type="xs:ID"/>
-                            <xs:element name="user_id" type="xs:IDREF"/>
+                            <xs:element name="user_id" type="xs:string"/>
                             <xs:element name="contact_name" type="xs:string"/>
                             <xs:element name="contact_telephone">
                                 <xs:simpleType>

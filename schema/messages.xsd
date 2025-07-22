@@ -7,15 +7,15 @@
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="message_id" type="xs:ID"/>
-                            <xs:element name="sender_id" type="xs:IDREF"/>
+                            <xs:element name="sender_id" type="xs:string"/>
                             <xs:choice>
-                                <xs:element name="recipient" type="xs:IDREF" maxOccurs="unbounded"/>
-                                <xs:element name="recipient_group" type="xs:IDREF"/>
+                                <xs:element name="recipient" type="xs:string" maxOccurs="unbounded"/>
+                                <xs:element name="recipient_group" type="xs:string"/>
                             </xs:choice>
 
                             <xs:element name="content" type="xs:string"/>
                             <xs:element name="file" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-                            <xs:element name="read_by" type="xs:IDREFS" minOccurs="0"/>
+                            <xs:element name="read_by" type="xs:string" minOccurs="0"/>
                         </xs:sequence>
                         <xs:attribute name="timestamp" type="xs:dateTime" use="optional"/>
                     </xs:complexType>
