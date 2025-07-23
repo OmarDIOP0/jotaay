@@ -9,7 +9,7 @@
     
     <!-- Formulaire d'ajout caché -->
     <div id="formulaireAjoutContact" style="display: none;">
-        <form action="../api.php" method="post" class="modern-form">
+        <form action="/api.php" method="post" class="modern-form">
             <input type="hidden" name="action" value="ajouter_contact">
             
             <div class="form-group">

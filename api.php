@@ -1,13 +1,14 @@
 <?php
 session_start();
+file_put_contents("debug.log", "API appelé avec action : " . ($_POST['action'] ?? 'aucune') . "\n", FILE_APPEND);
 
-if (!isset($_SESSION['id_utilisateur']) || empty($_SESSION['id_utilisateur'])) {
+if (!isset($_SESSION['user']) || empty($_SESSION['user'])) {
     if (isset($_GET['action']) && in_array($_GET['action'], ['lister_membres', 'obtenir_membres_groupe'])) {
         http_response_code(401);
         echo "<p style='color:red;'>Session expirée ou utilisateur non connecté.</p>";
         exit;
     }
-    header('Location: connexion/login.php');
+    header('Location: auth/login.php');
     exit;
 }
 

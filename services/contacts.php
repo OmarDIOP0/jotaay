@@ -10,12 +10,12 @@ $action = $_POST['action'];
 switch($action){
     case 'ajouter_contact':
             // Ajouter un contact
-            if (isset($_POST['nom_contact'], $_POST['telephone_contact'])) {
-                $nom_contact = htmlspecialchars($_POST['nom_contact']);
-                $telephone_contact = htmlspecialchars($_POST['telephone_contact']);
+            if (isset($_POST['contact_name'], $_POST['contact_telephone'])) {
+                $nom_contact = htmlspecialchars($_POST['contact_name']);
+                $contact_telephone = htmlspecialchars($_POST['contact_telephone']);
                 
                 // Vérifier si le contact existe déjà pour cet utilisateur
-                $contact_existant = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$telephone_contact']")[0];
+                $contact_existant = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$contact_telephone']")[0];
                 
                 if ($contact_existant) {
                     // Le contact existe déjà
@@ -24,7 +24,7 @@ switch($action){
                 }
                 
                 // Vérifier si le numéro de téléphone correspond à un utilisateur existant
-                $utilisateur_existe = $utilisateurs->xpath("//user[telephone='$telephone_contact']")[0];
+                $utilisateur_existe = $utilisateurs->xpath("//user[telephone='$contact_telephone']")[0];
                 if (!$utilisateur_existe) {
                     // L'utilisateur n'existe pas
                     header('Location: views/view.php?error=user_not_found');
@@ -32,7 +32,7 @@ switch($action){
                 }
                 
                 // Vérifier que l'utilisateur ne s'ajoute pas lui-même
-                if ($telephone_contact === $utilisateur_courant->telephone) {
+                if ($contact_telephone === $utilisateur_courant->telephone) {
                     header('Location: views/view.php?error=cannot_add_self');
                     exit;
                 }
@@ -42,7 +42,7 @@ switch($action){
                 $contact->addChild('id', uniqid());
                 $contact->addChild('user_id', $id_utilisateur);
                 $contact->addChild('contact_name', $nom_contact);
-                $contact->addChild('contact_telephone', $telephone_contact);
+                $contact->addChild('contact_telephone', $contact_telephone);
                 
                 // Sauvegarder le fichier
                 $resultat = $contacts->asXML('xmls/contacts.xml');

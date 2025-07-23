@@ -548,7 +548,7 @@
                 <button class="modal-close" onclick="closeAddContactModal()">×</button>
             </div>
             <form action="../api.php" method="post">
-                <input type="hidden" name="action" value="add_contact">
+                <input type="hidden" name="action" value="ajouter_contact">
                 <div class="modal-content">
                     <div class="form-group">
                         <label for="contact_name">Nom du contact</label>
@@ -556,7 +556,11 @@
                     </div>
                     <div class="form-group">
                         <label for="contact_telephone">Numéro de téléphone</label>
-                        <input type="tel" id="contact_telephone" name="contact_telephone" placeholder="Ex: +221701234567" required>
+                        <input type="tel" id="contact_telephone" name="contact_telephone"
+                                pattern="(77|70|78|76)[0-9]{7}"
+                                title="Numéro doit commencer par 77, 70, 78 ou 76 suivi de 7 chiffres"
+                                placeholder="Ex: 770123456"
+                                required/>
                     </div>
                 </div>
                 <div class="modal-footer">
