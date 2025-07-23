@@ -1,14 +1,14 @@
 <div class="profile-section">
     <div class="profile-header">
         <div class="profile-avatar">
-            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'JOTAAY.png') { ?>
+            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'default.jpg') { ?>
                 <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->photo_profil); ?>" alt="Photo de profil">
             <?php } else { ?>
                 <?php echo strtoupper(substr($utilisateur_courant->username, 0, 1)); ?>
             <?php } ?>
         </div>
         <div class="profile-info">
-            <h2><?php echo htmlspecialchars($utilisateur_courant->username); ?></h2>
+            <h2><?php echo htmlspecialchars($utilisateur_courant->username . ' ' . $utilisateur_courant->nom); ?></h2>
             <div class="profile-telephone"><?php echo htmlspecialchars($utilisateur_courant->telephone); ?></div>
         </div>
     </div>
@@ -19,11 +19,7 @@
         <input type="hidden" name="action" value="mettre_a_jour_profil">
         <div class="form-group">
             <label class="form-label">Prénom</label>
-            <input type="text" name="prenom" value="<?php echo htmlspecialchars($utilisateur_courant->prenom); ?>" class="form-input" placeholder="Votre prénom">
-        </div>
-        <div class="form-group">
-            <label class="form-label">Nom</label>
-            <input type="text" name="nom" value="<?php echo htmlspecialchars($utilisateur_courant->nom); ?>" class="form-input" placeholder="Votre nom">
+            <input type="text" name="username" value="<?php echo htmlspecialchars($utilisateur_courant->username); ?>" class="form-input" placeholder="Votre prénom">
         </div>
         <div class="form-group">
             <label class="form-label">Sexe</label>
@@ -52,4 +48,4 @@
         </button>
     </form>
 </div>
-<script src="../assets/js/global.js"></script>
+<script src="../js/global.js"></script>
