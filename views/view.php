@@ -517,12 +517,8 @@
                             </div>
                             <div class="profile-form">
                                 <div class="form-group">
-                                    <label for="username">Prénom</label>
+                                    <label for="username">Username</label>
                                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($utilisateur_courant->username); ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nom">Nom</label>
-                                    <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($utilisateur_courant->nom); ?>" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="telephone">Téléphone</label>
@@ -579,7 +575,7 @@
                 <button class="modal-close" onclick="closeCreateGroupModal()">×</button>
             </div>
             <form action="../api.php" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="create_group">
+                <input type="hidden" name="action" value="creer_groupe">
                 <div class="modal-content">
                     <div class="form-group">
                         <label for="group_name">Nom du groupe</label>
@@ -844,7 +840,7 @@
             </div>
         </div>
     </div>
-<script src="../scripts/scripts.js"></script>
+<script src="../assets/js/scripts.js"></script>
     <!-- Formulaires cachés pour les actions -->
     <form id="deleteContactForm" action="../api.php" method="post" style="display: none;">
         <input type="hidden" name="action" value="delete_contact">
@@ -860,7 +856,7 @@
         <input type="hidden" name="action" value="leave_group">
         <input type="hidden" name="id_group" id="groupIdToLeave">
     </form>
-    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/scripts.js"></script>
     <script src="../assets/js/global.js"></script>
 </body>
 </html>

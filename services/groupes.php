@@ -10,25 +10,27 @@ $action = $_POST['action'];
 switch($action){
     case 'creer_groupe':
             // Créer un groupe
-            if (!isset($_POST['ids_membres']) || count($_POST['ids_membres']) < 2) {
-                            header('Location: views/view.php?error=minimum_two_members');
+            if (!isset($_POST['members']) || count($_POST['members']) < 2) {
+                header('Location: views/view.php?error=minimum_two_members');
             exit;
             }
             $groupe = $groupes->addChild('group');
-            $groupe->addChild('id', uniqid());
-            $groupe->addChild('name', htmlspecialchars($_POST['nom_groupe']));
-            $groupe->addChild('id_admin', $id_utilisateur);
-            if (isset($_FILES['photo_groupe']) && $_FILES['photo_groupe']['error'] === UPLOAD_ERR_OK) {
+            $groupe->addChild('group_id', uniqid());
+            $groupe->addChild('group_name', htmlspecialchars($_POST['group_name']));
+            $groupe->addChild('group_description', htmlspecialchars($_POST['group_description'] ?? ''));
+            $groupe->addChild('admin_id', $id_utilisateur);
+            if (isset($_FILES['group_photo']) && $_FILES['group_photo']['error'] === UPLOAD_ERR_OK) {
                 $upload_dir = 'uploads/';
-                $nom_fichier = uniqid() . '_' . basename($_FILES['photo_groupe']['name']);
+                $nom_fichier = uniqid() . '_' . basename($_FILES['group_photo']['name']);
                 $fichier_cible = $upload_dir . $nom_fichier;
-                if (move_uploaded_file($_FILES['photo_groupe']['tmp_name'], $fichier_cible)) {
+                if (move_uploaded_file($_FILES['group_photo']['tmp_name'], $fichier_cible)) {
                     $groupe->addChild('group_photo', $nom_fichier);
                 }
             }
-            foreach ($_POST['ids_membres'] as $id_membre) {
-                $groupe->addChild('member_id', htmlspecialchars($id_membre));
-            }
+            foreach ($_POST['members'] as $id_membre) {
+                    $groupe->addChild('membre_id', htmlspecialchars($id_membre));
+                }
+
             $resultat = $groupes->asXML('xmls/groups.xml');
             
             if ($resultat) {
@@ -49,7 +51,7 @@ switch($action){
                 
                 if ($groupe) {
                     // Vérifier que l'utilisateur connecté est l'admin du groupe
-                    if ((string)$groupe->id_admin === $id_utilisateur) {
+                    if ((string)$groupe->admin_id === $id_utilisateur) {
                         // Supprimer le groupe
                     $dom = dom_import_simplexml($groupe);
                     $dom->parentNode->removeChild($dom);
@@ -83,7 +85,7 @@ switch($action){
                 
                 if ($groupe) {
                     // Vérifier que l'utilisateur connecté est admin ou coadmin
-                    $est_admin = (string)$groupe->id_admin === $id_utilisateur;
+                    $est_admin = (string)$groupe->admin_id === $id_utilisateur;
                     $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
                     $est_coadmin = in_array($id_utilisateur, $coadmins);
                     
@@ -112,9 +114,9 @@ switch($action){
                                 $groupe->addChild('member_id', $mid);
                             }
                             // Si le membre retiré était admin, transférer l'admin à un autre membre
-                            if ((string)$groupe->id_admin === $id_membre) {
+                            if ((string)$groupe->admin_id === $id_membre) {
                                 if (!empty($new_member_ids)) {
-                                    $groupe->id_admin = $new_member_ids[0];
+                                    $groupe->admin_id = $new_member_ids[0];
                                     // Supprimer les coadmins si l'admin est retiré
                                     unset($groupe->coadmins);
                                 }
@@ -159,7 +161,7 @@ switch($action){
                 
                 if ($groupe) {
                     // Vérifier que l'utilisateur connecté est admin
-                    if ((string)$groupe->id_admin === $id_utilisateur) {
+                    if ((string)$groupe->admin_id === $id_utilisateur) {
                         // Vérifier que le coadmin est membre du groupe
                         $est_membre = false;
                         foreach ($groupe->member_id as $id_membre) {
@@ -211,7 +213,7 @@ switch($action){
                 
                 if ($groupe) {
                     // Vérifier que l'utilisateur connecté est admin
-                    if ((string)$groupe->id_admin === $id_utilisateur) {
+                    if ((string)$groupe->admin_id === $id_utilisateur) {
                         // Retirer le coadmin
                         if (isset($groupe->coadmins)) {
                     $coadmins = explode(',', (string)$groupe->coadmins);
@@ -271,9 +273,9 @@ switch($action){
                             $groupe->addChild('member_id', $id_membre_groupe);
                         }
                         // Si l'utilisateur était admin, transférer l'admin à un autre membre
-                        if ((string)$groupe->id_admin === $id_utilisateur) {
+                        if ((string)$groupe->admin_id === $id_utilisateur) {
                             if (!empty($member_ids)) {
-                                $groupe->id_admin = $member_ids[0];
+                                $groupe->admin_id = $member_ids[0];
                                 unset($groupe->coadmins);
                             } else {
                                 // Si plus aucun membre, on peut supprimer le groupe ou laisser l'admin seul (ici on laisse le groupe)
@@ -331,7 +333,7 @@ switch($action){
                         foreach ($groupe->member_id as $id_membre_groupe) {
                             $membre = $utilisateurs->xpath("//user[id='$id_membre_groupe']")[0];
                             if ($membre) {
-                                $est_admin = (string)$groupe->id_admin === $id_membre_groupe;
+                                $est_admin = (string)$groupe->admin_id === $id_membre_groupe;
                                 $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
                                 $est_coadmin = in_array($id_membre_groupe, $coadmins);
                                 
@@ -375,7 +377,7 @@ switch($action){
                 
                 if ($groupe) {
                     // Vérifier que l'utilisateur est admin ou coadmin
-                    $est_admin = (string)$groupe->id_admin === $id_utilisateur;
+                    $est_admin = (string)$groupe->admin_id === $id_utilisateur;
                     $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
                     $est_coadmin = in_array($id_utilisateur, $coadmins);
                     
@@ -431,7 +433,7 @@ switch($action){
                                 if ((string)$id_membre !== $id_utilisateur) { // Ne pas pouvoir se retirer soi-même
                                     $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
                                     if ($membre) {
-                                        $est_admin = (string)$groupe->id_admin === $id_membre;
+                                        $est_admin = (string)$groupe->admin_id === $id_membre;
                                         
                                         echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
                                         echo "<div>";
@@ -516,7 +518,7 @@ switch($action){
                 $id_nouveau_membre = htmlspecialchars($_POST['id_nouveau_membre']);
                 $groupe = $groupes->xpath("//group[id='$id_groupe']")[0];
                 if ($groupe) {
-                    $est_admin = (string)$groupe->id_admin === $id_utilisateur;
+                    $est_admin = (string)$groupe->admin_id === $id_utilisateur;
                     $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
                     $est_coadmin = in_array($id_utilisateur, $coadmins);
                     if ($est_admin || $est_coadmin) {
@@ -527,7 +529,7 @@ switch($action){
                                 break;
                             }
                         }
-                        if (!$already_member && (string)$groupe->id_admin !== $id_nouveau_membre) {
+                        if (!$already_member && (string)$groupe->admin_id !== $id_nouveau_membre) {
                             $groupe->addChild('member_id', $id_nouveau_membre);
                             $groupes->asXML('xmls/groups.xml');
                             header('Location: views/view.php?success=member_added');

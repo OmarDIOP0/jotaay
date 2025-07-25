@@ -1,13 +1,32 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <groups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/groups.xsd">
     <group>
         <group_id>g001</group_id>
         <group_name>Développeurs</group_name>
+        <group_description>Dev</group_description>
         <admin_id>u001</admin_id>
         <coadmins>u002</coadmins>
-        <photo_groupe>devs.png</photo_groupe>
+        <group_photo>devs.png</group_photo>
         <membre_id>u001</membre_id>
         <membre_id>u002</membre_id>
         <membre_id>u003</membre_id>
     </group>
+    <group>
+        <group_id>688411a2a0284</group_id>
+        <group_name>Groupe1</group_name>
+        <group_description>Groupe de test</group_description>
+        <admin_id>687ff5a5962bd</admin_id>
+        <coadmins>687ff5a5962bd</coadmins>
+        <group_photo>groupe1.png</group_photo>
+        <member_id>771234567</member_id>
+        <member_id>780987654</member_id>
+    </group>
+<group>
+    <group_id>6884141d2578f</group_id>
+    <group_name>GRP2</group_name>
+    <group_description>grp2</group_description>
+    <admin_id>687ff5a5962bd</admin_id>
+    <membre_id>771234567</membre_id>
+    <membre_id>780987654</membre_id>
+</group>
 </groups>
