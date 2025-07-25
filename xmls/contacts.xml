@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<contacts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:noNamespaceSchemaLocation="../schema/contacts.xsd">
+<contacts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/contacts.xsd">
     
     <contact>
         <contact_id>c001</contact_id>
@@ -40,4 +39,4 @@
         <contact_telephone>770998877</contact_telephone>
     </contact>
 
-</contacts>
+<contact><id>6880e5ededea6</id><user_id>68804fa55077a</user_id><contact_name>KhadidiatouDDiallo</contact_name><contact_telephone>700999888</contact_telephone></contact><contact><id>6880eb65bdaa8</id><user_id>68804fa55077a</user_id><contact_name>OusseynouSeck</contact_name><contact_telephone>760111222</contact_telephone></contact></contacts>

@@ -234,7 +234,7 @@ function displayMessage(message) {
   if (!isSent && currentChatType === "group") {
     const sender = usersData.find((u) => u.id == message.sender_id)
     if (sender) {
-      senderInfo = `<div class="message-sender">${sender.prenom} ${sender.nom}</div>`
+      senderInfo = `<div class="message-sender">${sender.username} ${sender.nom}</div>`
     }
   }
 

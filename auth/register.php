@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $utilisateurs->asXML('../xmls/users.xml');
-            $_SESSION['user'] = (string) $utilisateur->user_id;
+            $_SESSION['user_id'] = (string) $nouvel_utilisateur->user_id;
             header('Location: ../views/view.php');
             exit;
         }

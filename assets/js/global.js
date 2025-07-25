@@ -145,6 +145,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    document.querySelectorAll('.group-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const groupId = this.dataset.groupId;
+            window.location.href = '?conversation=groupe:' + groupId + '&tab=discussions';
+        });
+    });
 });
 
 // ========================================
@@ -371,6 +378,28 @@ function retirerMembreGroupe(idGroupe, nomGroupe) {
         });
 }
 
+// === MODALS GROUPES ===
+function showAddGroupModal() {
+    document.getElementById('add-group-modal').classList.remove('hidden');
+}
+function closeAddGroupModal() {
+    document.getElementById('add-group-modal').classList.add('hidden');
+    document.getElementById('add-group-modal').querySelector('form').reset();
+}
+function showGroupInfoModal() {
+    document.getElementById('group-info-modal').classList.remove('hidden');
+}
+function closeGroupInfoModal() {
+    document.getElementById('group-info-modal').classList.add('hidden');
+}
+function showEditGroupModal() {
+    document.getElementById('edit-group-modal').classList.remove('hidden');
+}
+function closeEditGroupModal() {
+    document.getElementById('edit-group-modal').classList.add('hidden');
+    document.getElementById('edit-group-modal').querySelector('form').reset();
+}
+
 // ========================================
 // FONCTIONS POUR LES MODALS
 // ========================================
@@ -519,6 +548,71 @@ function gererActionGroupeSelect(select, idGroupe) {
             break;
     }
     select.value = ''; // Reset select
+}
+
+// Fonction pour ouvrir le modal d'infos groupe avec données dynamiques
+function openGroupInfo(id, name, description, photo, members) {
+    document.getElementById('group-info-name').value = name;
+    document.getElementById('group-info-description').value = description;
+    document.getElementById('group-info-photo').src = photo || '/placeholder.svg?height=80&width=80&text=' + (name ? name.charAt(0).toUpperCase() : 'G');
+    // Remplir la liste des membres
+    const membersList = document.getElementById('group-members-list');
+    membersList.innerHTML = '';
+    if (Array.isArray(members)) {
+        members.forEach(m => {
+            const div = document.createElement('div');
+            div.className = 'member-checkbox';
+            div.textContent = m;
+            membersList.appendChild(div);
+        });
+    }
+    showGroupInfoModal();
+    // Stocker l'id du groupe pour édition
+    document.getElementById('edit-group-id').value = id;
+}
+
+// Fonction pour pré-remplir le modal d'édition de groupe
+function editGroup() {
+    // Récupérer les valeurs actuelles du modal info
+    const id = document.getElementById('edit-group-id').value;
+    const name = document.getElementById('group-info-name').value;
+    const description = document.getElementById('group-info-description').value;
+    document.getElementById('edit-group-id').value = id;
+    document.getElementById('edit_group_name').value = name;
+    document.getElementById('edit_group_description').value = description;
+    closeGroupInfoModal();
+    showEditGroupModal();
+}
+
+// ========================================
+// FONCTION POUR OUVRIR UNE DISCUSSION CONTACT
+// ========================================
+function openChat(contactId, contactName, contactPhoto) {
+    // Masquer le panneau contacts si présent
+    const contactsPanel = document.getElementById('contacts-panel');
+    if (contactsPanel) contactsPanel.classList.add('hidden');
+    // Afficher le panneau de discussion si présent
+    const discussionsPanel = document.getElementById('discussions-panel');
+    if (discussionsPanel) discussionsPanel.classList.remove('hidden');
+
+    // Mettre à jour l'avatar et le nom dans le header de la messagerie
+    const chatAvatar = document.getElementById('chat-avatar');
+    const chatName = document.getElementById('chat-name');
+    if (chatAvatar && chatName) {
+        if (contactPhoto && contactPhoto !== 'default.jpg') {
+            chatAvatar.src = '../uploads/' + contactPhoto;
+            chatAvatar.alt = contactName;
+        } else {
+            // Générer les initiales
+            const initials = contactName.split(' ').map(n => n[0]).join('').toUpperCase();
+            // Générer une image SVG avec les initiales
+            chatAvatar.src = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><rect width='100%' height='100%' fill='%23ccc'/><text x='50%' y='55%' font-size='18' font-family='Arial' fill='white' text-anchor='middle' alignment-baseline='middle'>${initials}</text></svg>`;
+            chatAvatar.alt = initials;
+        }
+        chatName.textContent = contactName;
+    }
+    // Charger les messages du contact (à compléter selon ton backend)
+    // ...
 }
 
 // Fermer les modales en cliquant en dehors

@@ -1,13 +1,13 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['id_utilisateur']) || empty($_SESSION['id_utilisateur'])) {
+if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     if (isset($_GET['action']) && in_array($_GET['action'], ['lister_membres', 'obtenir_membres_groupe'])) {
         http_response_code(401);
         echo "<p style='color:red;'>Session expirée ou utilisateur non connecté.</p>";
         exit;
     }
-    header('Location: connexion/login.php');
+    header('Location: auth/login.php');
     exit;
 }
 
@@ -30,8 +30,9 @@ if ($messages === false) {
 }
 
 // Récupérer l'utilisateur connecté
-$id_utilisateur = $_SESSION['user'];
-$utilisateur_courant = $utilisateurs->xpath("//user[id='$id_utilisateur']")[0];
+$id_utilisateur = $_SESSION['user_id'];
+$resultat_utilisateur = $utilisateurs->xpath("//user[id='$id_utilisateur']");
+$utilisateur_courant = $resultat_utilisateur ? $resultat_utilisateur[0] : null;
 
 $_POST['utilisateurs'] = $utilisateurs;
 $_POST['contacts'] = $contacts;

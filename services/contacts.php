@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start(); // Supprimé car déjà démarré dans api.php
 
 $utilisateurs = $_POST['utilisateurs'];
 $contacts = $_POST['contacts'];
@@ -15,7 +15,8 @@ switch($action){
                 $telephone_contact = htmlspecialchars($_POST['telephone_contact']);
                 
                 // Vérifier si le contact existe déjà pour cet utilisateur
-                $contact_existant = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$telephone_contact']")[0];
+                $contact_result = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$telephone_contact']");
+                $contact_existant = $contact_result ? $contact_result[0] : null;
                 
                 if ($contact_existant) {
                     // Le contact existe déjà
@@ -24,7 +25,8 @@ switch($action){
                 }
                 
                 // Vérifier si le numéro de téléphone correspond à un utilisateur existant
-                $utilisateur_existe = $utilisateurs->xpath("//user[telephone='$telephone_contact']")[0];
+                $utilisateur_result = $utilisateurs->xpath("//user[telephone='$telephone_contact']");
+                $utilisateur_existe = $utilisateur_result ? $utilisateur_result[0] : null;
                 if (!$utilisateur_existe) {
                     // L'utilisateur n'existe pas
                     header('Location: views/view.php?error=user_not_found');
@@ -63,7 +65,8 @@ switch($action){
                 $id_contact = htmlspecialchars($_POST['id_contact']);
                 
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact_result = $contacts->xpath("//contact[id='$id_contact']");
+                $contact = $contact_result ? $contact_result[0] : null;
                 
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
@@ -95,7 +98,8 @@ switch($action){
                 $id_contact = htmlspecialchars($_POST['id_contact']);
                 $nouveau_nom = htmlspecialchars($_POST['nom_contact']);
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact_result = $contacts->xpath("//contact[id='$id_contact']");
+                $contact = $contact_result ? $contact_result[0] : null;
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
                     if ((string)$contact->user_id === $id_utilisateur) {

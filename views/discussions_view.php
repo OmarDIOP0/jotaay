@@ -1,6 +1,7 @@
 <?php
 // Les fonctions sont déjà définies dans controller.php, pas besoin de les redéclarer ici
 ?>
+<div id="discussion-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;"></div>
 <div class="profile-section">
     <h2>Mes Discussions</h2>
     <p style="color: var(--text-muted); margin-bottom: 16px;">Consultez vos conversations avec vos contacts et groupes</p>
