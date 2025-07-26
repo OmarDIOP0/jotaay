@@ -22,8 +22,6 @@ switch($action){
                     header('Location: views/view.php?error=contact_already_exists');
                     exit;
                 }
-
-    // Vérifier si le numéro de téléphone correspond à un utilisateur existant
     $utilisateur_result = $utilisateurs->xpath("//user[telephone='$contact_telephone']");
     $utilisateur_existe = $utilisateur_result ? $utilisateur_result[0] : null;
 

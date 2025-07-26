@@ -10,13 +10,13 @@ $action = $_POST['action'];
 switch($action){
     case 'creer_groupe':
             // Créer un groupe
-            if (!isset($_POST['members']) || count($_POST['members']) < 2) {
+            if (!isset($_POST['membres']) || count($_POST['membres']) < 2) {
                 header('Location: views/view.php?error=minimum_two_members');
             exit;
             }
             $groupe = $groupes->addChild('group');
             $groupe->addChild('group_id', uniqid('groupe_id'));
-            $groupe->addChild('group_name', htmlspecialchars($_POST['nom_groupe']));
+            $groupe->addChild('group_name', htmlspecialchars($_POST['group_name']));
             $groupe->addChild('admin_id', $id_utilisateur);
             if (isset($_FILES['group_photo']) && $_FILES['group_photo']['error'] === UPLOAD_ERR_OK) {
                 $upload_dir = 'uploads/';
@@ -26,7 +26,7 @@ switch($action){
                     $groupe->addChild('group_photo', $nom_fichier);
                 }
             }
-            foreach ($_POST['ids_membres'] as $id_membre) {
+            foreach ($_POST['membres'] as $id_membre) {
                 $groupe->addChild('membre_id', htmlspecialchars($id_membre));
             }
             $resultat = $groupes->asXML('xmls/groups.xml');

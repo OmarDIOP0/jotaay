@@ -10,7 +10,11 @@
     </div>
     <div class="chat-list">
         <?php 
-        $groupes_utilisateur = $groupes->xpath("//group[membre_id='$id_utilisateur']");
+        $user = $utilisateurs->xpath("//user[user_id='$id_utilisateur']")[0];
+        $telephone_utilisateur = $user->telephone;
+
+        $groupes_utilisateur = $groupes->xpath("//group[membre_id='$telephone_utilisateur']");
+
         if (empty($groupes_utilisateur)) : ?>
             <div class="empty-state" style="text-align:center; color:#888; margin-top:2em;">
                 <div class="empty-icon" style="font-size:2em;">👥</div>
@@ -21,18 +25,18 @@
             foreach ($groupes_utilisateur as $groupe): 
                 $membres = [];
                 foreach ($groupe->membre_id as $mid) {
-                    $m = $utilisateurs->xpath("//user[id='$mid']");
+                    $m = $utilisateurs->xpath("//user[user_id='$mid']");
                     if ($m && isset($m[0])) {
-                        $membres[] = htmlspecialchars($m[0]->username ?? $m[0]->prenom ?? $m[0]->nom ?? $m[0]->telephone);
+                        $membres[] = htmlspecialchars($m[0]->username ?? $m[0]->telephone);
                     }
                 }
-                $photo = ($groupe->photo_groupe && $groupe->photo_groupe != 'default.jpg') ? '../uploads/' . htmlspecialchars($groupe->photo_groupe) : '';
+                $photo = ($groupe->group_photo && $groupe->group_photo != 'default.jpg') ? '../uploads/' . htmlspecialchars($groupe->group_photo) : '';
                 $membres_js = json_encode($membres);
         ?>
             <div class="chat-item" style="cursor:pointer" onclick="openGroupInfo('<?php echo $groupe->group_id; ?>', '<?php echo htmlspecialchars($groupe->group_name, ENT_QUOTES); ?>', '', '<?php echo $photo; ?>', <?php echo $membres_js; ?>)">
                 <div class="chat-avatar">
-                    <?php if ($groupe->photo_groupe && $groupe->photo_groupe != 'default.jpg'): ?>
-                        <img src="../uploads/<?php echo htmlspecialchars($groupe->photo_groupe); ?>" alt="Avatar">
+                    <?php if ($groupe->group_photo && $groupe->group_photo != 'default.jpg'): ?>
+                        <img src="../uploads/<?php echo htmlspecialchars($groupe->group_photo); ?>" alt="Avatar">
                     <?php else: ?>
                         <img src="/placeholder.svg?height=48&width=48&text=<?php echo strtoupper(substr($groupe->group_name, 0, 1)); ?>" alt="Avatar">
                     <?php endif; ?>
@@ -66,23 +70,23 @@
             <div class="modal-content">
                 <div class="form-group">
                     <label for="group_name">Nom du groupe</label>
-                    <input type="text" id="group_name" name="nom_groupe" placeholder="Entrez le nom du groupe" required>
+                    <input type="text" id="group_name" name="group_name" placeholder="Entrez le nom du groupe" required>
                 </div>
                 <div class="form-group">
                     <label for="group_description">Description</label>
-                    <textarea id="group_description" name="description_groupe" placeholder="Description du groupe" rows="2"></textarea>
+                    <textarea id="group_description" name="group_description" placeholder="Description du groupe" rows="2"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="group_photo">Photo du groupe</label>
-                    <input type="file" id="group_photo" name="photo_groupe" accept="image/*">
+                    <input type="file" id="group_photo" name="group_photo" accept="image/*">
                 </div>
                 <div class="form-group">
                     <label>Sélectionner les membres</label>
                     <div class="group-members-selection">
                         <?php foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact): ?>
                             <div class="member-checkbox">
-                                <input type="checkbox" name="ids_membres[]" value="<?php echo htmlspecialchars($contact->contact_telephone); ?>" id="member_<?php echo $contact->id; ?>">
-                                <label for="member_<?php echo $contact->id; ?>"><?php echo htmlspecialchars($contact->contact_name); ?></label>
+                                <input type="checkbox" name="membres[]" value="<?php echo htmlspecialchars($contact->contact_telephone); ?>" id="member_<?php echo $contact->contact_id; ?>">
+                                <label for="member_<?php echo $contact->contact_id; ?>"><?php echo htmlspecialchars($contact->contact_name); ?></label>
                             </div>
                         <?php endforeach; ?>
                     </div>
