@@ -1,245 +1,170 @@
-<div class="profile-section">
-    <div class="section-header">
-        <h2>Mes Groupes</h2>
-        <button type="button" onclick="afficherFormulaireCreationGroupe()" class="modern-btn btn-primary">
-            <span>➕</span>
-            Créer un Groupe
+<!-- Panneau Groupes -->
+<div id="groups-panel" class="groups-panel hidden">
+    <div class="panel-header">
+        <button class="add-group-btn" onclick="showAddGroupModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"/>
+            </svg>
+            Ajouter un groupe
         </button>
     </div>
-    <!-- Formulaire de création caché -->
-    <div id="formulaireCreationGroupe" style="display: none;">
-        <form action="../api.php" method="post" enctype="multipart/form-data" class="modern-form">
-            <input type="hidden" name="action" value="creer_groupe">
-            <div class="form-group">
-                <label class="form-label">Nom du groupe</label>
-                <input type="text" name="nom_groupe" class="form-input" placeholder="Nom du groupe" required>
+    <div class="chat-list">
+        <?php 
+        $groupes_utilisateur = $groupes->xpath("//group[membre_id='$id_utilisateur']");
+        if (empty($groupes_utilisateur)) : ?>
+            <div class="empty-state" style="text-align:center; color:#888; margin-top:2em;">
+                <div class="empty-icon" style="font-size:2em;">👥</div>
+                <h3>Aucun groupe pour le moment</h3>
+                <p>Créez votre premier groupe pour commencer à discuter en équipe.</p>
             </div>
-            <div class="form-group">
-                <label class="form-label">Photo du groupe</label>
-                <input type="file" name="photo_groupe" class="form-input" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Sélectionner les membres</label>
-                <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">
-                    <?php
-                    foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact) {
-                        $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']")[0];
-                        if ($utilisateur_contact) {
-                            echo "<label style='display: flex; align-items: center; gap: 8px; padding: 8px; cursor: pointer; border-radius: 6px; transition: background 0.3s ease;' onmouseover='this.style.background=\"var(--bg-secondary)\"' onmouseout='this.style.background=\"transparent\"'>";
-                            echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->id) . "' style='margin: 0;'>";
-                            echo "<span>" . htmlspecialchars($contact->contact_name) . "</span>";
-                            echo "</label>";
-                        }
+        <?php else:
+            foreach ($groupes_utilisateur as $groupe): 
+                $membres = [];
+                foreach ($groupe->membre_id as $mid) {
+                    $m = $utilisateurs->xpath("//user[id='$mid']");
+                    if ($m && isset($m[0])) {
+                        $membres[] = htmlspecialchars($m[0]->username ?? $m[0]->prenom ?? $m[0]->nom ?? $m[0]->telephone);
                     }
-                    ?>
+                }
+                $photo = ($groupe->photo_groupe && $groupe->photo_groupe != 'default.jpg') ? '../uploads/' . htmlspecialchars($groupe->photo_groupe) : '';
+                $membres_js = json_encode($membres);
+        ?>
+            <div class="chat-item" style="cursor:pointer" onclick="openGroupInfo('<?php echo $groupe->group_id; ?>', '<?php echo htmlspecialchars($groupe->group_name, ENT_QUOTES); ?>', '', '<?php echo $photo; ?>', <?php echo $membres_js; ?>)">
+                <div class="chat-avatar">
+                    <?php if ($groupe->photo_groupe && $groupe->photo_groupe != 'default.jpg'): ?>
+                        <img src="../uploads/<?php echo htmlspecialchars($groupe->photo_groupe); ?>" alt="Avatar">
+                    <?php else: ?>
+                        <img src="/placeholder.svg?height=48&width=48&text=<?php echo strtoupper(substr($groupe->group_name, 0, 1)); ?>" alt="Avatar">
+                    <?php endif; ?>
                 </div>
-                <small class="form-help">Sélectionnez au moins 2 contacts pour créer un groupe</small>
+                <div class="chat-info">
+                    <div class="chat-header">
+                        <span class="chat-name"><?php echo htmlspecialchars($groupe->group_name); ?></span>
+                        <?php if ($groupe->admin_id == $id_utilisateur): ?>
+                            <span class="badge-admin">Admin</span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="chat-preview">
+                        <span class="last-message"></span>
+                        <span class="group-meta"><?php echo count($groupe->membre_id); ?> membres</span>
+                    </div>
+                </div>
             </div>
-            <div class="form-actions">
-                <button type="submit" class="modern-btn btn-primary">
-                    <span>🏠</span>
-                    Créer le Groupe
-                </button>
-                <button type="button" onclick="cacherFormulaireCreationGroupe()" class="modern-btn btn-secondary">
-                    <span>❌</span>
-                    Annuler
-                </button>
-            </div>
-        </form>
+        <?php endforeach; endif; ?>
     </div>
 </div>
-<div class="search-bar">
-    <input type="text" id="rechercheGroupes" placeholder="Rechercher un groupe...">
-</div>
-<div class="modern-list">
-<?php 
-// Afficher tous les groupes où l'utilisateur est membre OU admin
-foreach ($groupes->group as $groupe) {
-    $est_membre = false;
-    foreach ($groupe->member_id as $id_membre) {
-        if (trim((string)$id_membre) === trim((string)$id_utilisateur)) {
-            $est_membre = true;
-            break;
-        }
-    }
-    $est_admin = trim((string)$groupe->id_admin) === trim((string)$id_utilisateur);
-    if (!$est_membre && !$est_admin) continue;
-    $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
-    $est_coadmin = in_array(trim((string)$id_utilisateur), array_map('trim', $coadmins));
-    $peut_gerer = $est_admin || $est_coadmin;
-    $ids_membres = [];
-    foreach ($groupe->member_id as $id_membre) {
-        $ids_membres[] = trim((string)$id_membre);
-    }
-    $id_admin = trim((string)$groupe->id_admin);
-    $tous_les_ids = $ids_membres;
-    $tous_les_ids[] = $id_admin;
-    $ids_uniques = array_unique($tous_les_ids);
-    $nombre_membres = count($ids_uniques);
-?>
-<div class="list-item groupe-item">
-    <div class="item-avatar">
-        <?php if ($groupe->group_photo && $groupe->group_photo != 'default.jpg') { ?>
-            <img src="../uploads/<?php echo htmlspecialchars($groupe->group_photo); ?>" alt="Photo Groupe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-        <?php } else { ?>
-            <?php echo strtoupper(substr($groupe->name, 0, 1)); ?>
-        <?php } ?>
-    </div>
-    <div class="item-content">
-        <div class="item-name">
-            <?php echo htmlspecialchars($groupe->name); ?>
-            <?php if ($est_admin) { ?>
-                <span class="badge badge-success">Admin</span>
-            <?php } elseif ($est_coadmin) { ?>
-                <span class="badge badge-warning">Co-Admin</span>
-            <?php } ?>
+
+<!-- Modal Ajouter Groupe -->
+<div id="add-group-modal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Ajouter un groupe</h3>
+            <button class="modal-close" onclick="closeAddGroupModal()">×</button>
         </div>
-        <div class="item-meta"><?php echo $nombre_membres; ?> membres</div>
-    </div>
-    <div class="item-actions">
-        <select class="modern-btn btn-secondary btn-small" onchange="gererActionGroupeSelect(this, '<?php echo $groupe->id; ?>')">
-            <option value="">⚙️ Actions</option>
-            <option value="ouvrir_conversation">💬 Ouvrir la conversation</option>
-            <option value="lister_membres">👥 Lister les membres</option>
-            <?php if ($peut_gerer) { ?>
-                <option value="gerer_coadmins">👑 Gérer les co-admins</option>
-                <option value="retirer_membre">➖ Retirer un membre</option>
-                <option value="ajouter_membre">➕ Ajouter un membre</option>
-            <?php } ?>
-            <?php if ($est_admin) { ?>
-                <option value="supprimer_groupe">🗑️ Supprimer le groupe</option>
-            <?php } else { ?>
-                <option value="quitter_groupe">🚪 Quitter le groupe</option>
-            <?php } ?>
-        </select>
-    </div>
-</div>
-<!-- 🔒 Modals -->
-<!-- Liste des membres -->
-<div id="liste-membres-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Membres du groupe : <?php echo htmlspecialchars($groupe->name); ?></h3>
-        <ul>
-            <?php
-            foreach ($ids_uniques as $id_membre) {
-                $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
-                if ($membre) {
-                    $est_admin_membre = ($id_admin === $id_membre);
-                    $coadmins_membre = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
-                    $est_coadmin_membre = in_array($id_membre, $coadmins_membre);
-                    echo "<li><strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong> ";
-                    echo "<small>(" . htmlspecialchars($membre->telephone) . ")</small> ";
-                    if ($est_admin_membre) echo "<span style='color:green;'>[Admin]</span>";
-                    elseif ($est_coadmin_membre) echo "<span style='color:orange;'>[Co-Admin]</span>";
-                    else echo "<span style='color:gray;'>[Membre]</span>";
-                    echo "</li>";
-                }
-            }
-            ?>
-        </ul>
-        <button onclick="document.getElementById('liste-membres-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Fermer</button>
-    </div>
-</div>
-<!-- Gérer les co-admins -->
-<div id="coadmins-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Gérer les co-admins : <?php echo htmlspecialchars($groupe->name); ?></h3>
-        <ul>
-            <?php foreach ($groupe->member_id as $id_membre) {
-                if ($id_membre == $groupe->id_admin) continue;
-                $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
-                if ($membre) {
-                    $est_coadmin_membre = isset($groupe->coadmins) && in_array($id_membre, explode(',', (string)$groupe->coadmins));
-                    echo "<li>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom);
-                    if ($est_coadmin_membre) {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_coadmin' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer co-admin</button></form>";
-                    } else {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='ajouter_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_coadmin' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-primary btn-small'>Ajouter co-admin</button></form>";
-                    }
-                    echo "</li>";
-                }
-            } ?>
-        </ul>
-        <button onclick="document.getElementById('coadmins-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Fermer</button>
-    </div>
-</div>
-<!-- Retirer un membre -->
-<div id="retirer-membre-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Retirer un membre du groupe : <?php echo htmlspecialchars($groupe->name); ?></h3>
-        <ul>
-            <?php foreach ($groupe->member_id as $id_membre) {
-                if ($id_membre == $groupe->id_admin || $id_membre == $id_utilisateur) continue;
-                $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
-                if ($membre) {
-                    echo "<li>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom);
-                    echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_membre'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_membre' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer</button></form>";
-                    echo "</li>";
-                }
-            } ?>
-        </ul>
-        <button onclick="document.getElementById('retirer-membre-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Fermer</button>
-    </div>
-</div>
-<!-- Supprimer le groupe -->
-<div id="supprimer-groupe-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Supprimer le groupe "<?php echo htmlspecialchars($groupe->name); ?>" ?</h3>
-        <p>Cette action est irréversible.</p>
-        <form method="post" action="../api.php">
-            <input type="hidden" name="action" value="supprimer_groupe">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
-            <button type="submit" class="modern-btn btn-danger">Confirmer la suppression</button>
-            <button type="button" onclick="document.getElementById('supprimer-groupe-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
-        </form>
-    </div>
-</div>
-<!-- Quitter le groupe -->
-<div id="quitter-groupe-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Quitter le groupe "<?php echo htmlspecialchars($groupe->name); ?>" ?</h3>
-        <form method="post" action="../api.php">
-            <input type="hidden" name="action" value="quitter_groupe">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
-            <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($id_utilisateur); ?>">
-            <button type="submit" class="modern-btn btn-danger">Confirmer</button>
-            <button type="button" onclick="document.getElementById('quitter-groupe-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
-        </form>
-    </div>
-</div>
-<!-- Ajouter un membre -->
-<div id="ajouter-membre-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
-    <div class="modal-content">
-        <h3>Ajouter un membre au groupe : <?php echo htmlspecialchars($groupe->name); ?></h3>
-        <form method="post" action="../api.php">
-            <input type="hidden" name="action" value="ajouter_membre">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
-            <div class="form-group">
-                <label for="id_nouveau_membre">Sélectionner un contact à ajouter :</label>
-                <select name="id_nouveau_membre" id="id_nouveau_membre" required>
-                    <option value="">-- Choisir un contact --</option>
-                    <?php
-                    foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact) {
-                        $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']")[0];
-                        if ($utilisateur_contact && !in_array((string)$utilisateur_contact->id, $ids_uniques)) {
-                            echo "<option value='" . htmlspecialchars($utilisateur_contact->id) . "'>" . htmlspecialchars($contact->contact_name) . " (" . htmlspecialchars($contact->contact_telephone) . ")</option>";
-                        }
-                    }
-                    ?>
-                </select>
+        <form action="../api.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="creer_groupe">
+            <div class="modal-content">
+                <div class="form-group">
+                    <label for="group_name">Nom du groupe</label>
+                    <input type="text" id="group_name" name="nom_groupe" placeholder="Entrez le nom du groupe" required>
+                </div>
+                <div class="form-group">
+                    <label for="group_description">Description</label>
+                    <textarea id="group_description" name="description_groupe" placeholder="Description du groupe" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="group_photo">Photo du groupe</label>
+                    <input type="file" id="group_photo" name="photo_groupe" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Sélectionner les membres</label>
+                    <div class="group-members-selection">
+                        <?php foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact): ?>
+                            <div class="member-checkbox">
+                                <input type="checkbox" name="ids_membres[]" value="<?php echo htmlspecialchars($contact->contact_telephone); ?>" id="member_<?php echo $contact->id; ?>">
+                                <label for="member_<?php echo $contact->id; ?>"><?php echo htmlspecialchars($contact->contact_name); ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="modern-btn btn-primary">Ajouter</button>
-            <button type="button" onclick="document.getElementById('ajouter-membre-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeAddGroupModal()">Annuler</button>
+                <button type="submit" class="btn-primary">Ajouter</button>
+            </div>
         </form>
     </div>
 </div>
-<?php } ?>
-<?php if (empty($groupes->group)) { ?>
-<div class="empty-state">
-    <div class="empty-icon">🏠</div>
-    <h3>Aucun groupe</h3>
-    <p>Créez votre premier groupe pour commencer à discuter en équipe.</p>
+
+<!-- Modal Informations Groupe -->
+<div id="group-info-modal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Informations du groupe</h3>
+            <button class="modal-close" onclick="closeGroupInfoModal()">×</button>
+        </div>
+        <div class="modal-content">
+            <div class="profile-settings">
+                <div class="profile-photo">
+                    <img id="group-info-photo" src="/placeholder.svg?height=80&width=80" alt="Groupe">
+                </div>
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label>Nom du groupe</label>
+                        <input type="text" id="group-info-name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="group-info-description" readonly rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Membres</label>
+                        <div id="group-members-list" class="group-members-selection" style="max-height: 120px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeGroupInfoModal()">Fermer</button>
+            <button type="button" class="btn-primary" onclick="editGroup()">Modifier</button>
+        </div>
+    </div>
 </div>
-<?php } ?>
-</div> 
-<script src="../js/global.js"></script> 
+
+<!-- Modal Modifier Groupe -->
+<div id="edit-group-modal" class="modal-overlay hidden">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Modifier le groupe</h3>
+            <button class="modal-close" onclick="closeEditGroupModal()">×</button>
+        </div>
+        <form action="../api.php" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="update_group">
+            <input type="hidden" name="group_id" id="edit-group-id">
+            <div class="modal-content">
+                <div class="form-group">
+                    <label for="edit_group_name">Nom du groupe</label>
+                    <input type="text" id="edit_group_name" name="group_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_group_description">Description</label>
+                    <textarea id="edit_group_description" name="group_description" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit_group_photo">Nouvelle photo</label>
+                    <input type="file" id="edit_group_photo" name="group_photo" accept="image/*">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeEditGroupModal()">Annuler</button>
+                <button type="submit" class="btn-primary">Sauvegarder</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Formulaire caché pour suppression de groupe -->
+<form id="deleteGroupForm" action="../api.php" method="post" style="display: none;">
+    <input type="hidden" name="action" value="delete_group">
+    <input type="hidden" name="group_id" id="groupIdToDelete">
+</form> 

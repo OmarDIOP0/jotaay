@@ -15,9 +15,8 @@ switch($action){
             exit;
             }
             $groupe = $groupes->addChild('group');
-            $groupe->addChild('group_id', uniqid());
-            $groupe->addChild('group_name', htmlspecialchars($_POST['group_name']));
-            $groupe->addChild('group_description', htmlspecialchars($_POST['group_description'] ?? ''));
+            $groupe->addChild('group_id', uniqid('groupe_id'));
+            $groupe->addChild('group_name', htmlspecialchars($_POST['nom_groupe']));
             $groupe->addChild('admin_id', $id_utilisateur);
             if (isset($_FILES['group_photo']) && $_FILES['group_photo']['error'] === UPLOAD_ERR_OK) {
                 $upload_dir = 'uploads/';
@@ -27,10 +26,9 @@ switch($action){
                     $groupe->addChild('group_photo', $nom_fichier);
                 }
             }
-            foreach ($_POST['members'] as $id_membre) {
-                    $groupe->addChild('membre_id', htmlspecialchars($id_membre));
-                }
-
+            foreach ($_POST['ids_membres'] as $id_membre) {
+                $groupe->addChild('membre_id', htmlspecialchars($id_membre));
+            }
             $resultat = $groupes->asXML('xmls/groups.xml');
             
             if ($resultat) {

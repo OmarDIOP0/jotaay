@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start(); // Supprimé car déjà démarré dans api.php
 
 $utilisateurs = $_POST['utilisateurs'];
 $contacts = $_POST['contacts'];
@@ -13,57 +13,60 @@ switch($action){
             if (isset($_POST['contact_name'], $_POST['contact_telephone'])) {
                 $nom_contact = htmlspecialchars($_POST['contact_name']);
                 $contact_telephone = htmlspecialchars($_POST['contact_telephone']);
-                
+
                 // Vérifier si le contact existe déjà pour cet utilisateur
-                $contact_existant = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$contact_telephone']")[0];
-                
+                $contact_result = $contacts->xpath("//contact[user_id='$id_utilisateur' and contact_telephone='$contact_telephone']");
+                $contact_existant = $contact_result ? $contact_result[0] : null;
+
                 if ($contact_existant) {
-                    // Le contact existe déjà
                     header('Location: views/view.php?error=contact_already_exists');
                     exit;
                 }
-                
-                // Vérifier si le numéro de téléphone correspond à un utilisateur existant
-                $utilisateur_existe = $utilisateurs->xpath("//user[telephone='$contact_telephone']")[0];
-                if (!$utilisateur_existe) {
-                    // L'utilisateur n'existe pas
-                    header('Location: views/view.php?error=user_not_found');
-                    exit;
-                }
-                
-                // Vérifier que l'utilisateur ne s'ajoute pas lui-même
-                if ($contact_telephone === $utilisateur_courant->telephone) {
-                    header('Location: views/view.php?error=cannot_add_self');
-                    exit;
-                }
-                
-                // Ajouter le contact
-                $contact = $contacts->addChild('contact');
-                $contact->addChild('id', uniqid());
-                $contact->addChild('user_id', $id_utilisateur);
-                $contact->addChild('contact_name', $nom_contact);
-                $contact->addChild('contact_telephone', $contact_telephone);
-                
-                // Sauvegarder le fichier
-                $resultat = $contacts->asXML('xmls/contacts.xml');
-                
-                if ($resultat) {
-                    header('Location: views/view.php?success=contact_added');
-                } else {
-                    header('Location: views/view.php?error=add_failed');
-                }
-            } else {
-                header('Location: views/view.php?error=missing_contact_data');
-            }
+
+    // Vérifier si le numéro de téléphone correspond à un utilisateur existant
+    $utilisateur_result = $utilisateurs->xpath("//user[telephone='$contact_telephone']");
+    $utilisateur_existe = $utilisateur_result ? $utilisateur_result[0] : null;
+
+    if (!$utilisateur_existe) {
+        header('Location: views/view.php?error=user_not_found');
+        exit;
+    }
+
+    // Vérifier que l'utilisateur ne s'ajoute pas lui-même
+    if ($contact_telephone === $utilisateur_courant->telephone) {
+        header('Location: views/view.php?error=cannot_add_self');
+        exit;
+    }
+
+    // Ajouter le contact
+    $contact = $contacts->addChild('contact');
+    $contact->addChild('contact_id', uniqid());
+    $contact->addChild('user_id', $id_utilisateur);
+    $contact->addChild('contact_name', $nom_contact);
+    $contact->addChild('contact_telephone', $contact_telephone);
+
+    // Sauvegarder
+    $resultat = $contacts->asXML('xmls/contacts.xml');
+
+    if ($resultat) {
+        header('Location: views/view.php?success=contact_added');
+    } else {
+        header('Location: views/view.php?error=add_failed');
+    }
+} else {
+    header('Location: views/view.php?error=missing_contact_data');
+}
+
             exit;
 
     case 'supprimer_contact':
             // Supprimer un contact
             if (isset($_POST['id_contact'])) {
-                $id_contact = htmlspecialchars($_POST['id_contact']);
+                $id_contact = htmlspecialchars($_POST['contact_id']);
                 
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact_result = $contacts->xpath("//contact[contact_id='$id_contact']");
+                $contact = $contact_result ? $contact_result[0] : null;
                 
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
@@ -95,7 +98,8 @@ switch($action){
                 $id_contact = htmlspecialchars($_POST['id_contact']);
                 $nouveau_nom = htmlspecialchars($_POST['nom_contact']);
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact_result = $contacts->xpath("//contact[id='$id_contact']");
+                $contact = $contact_result ? $contact_result[0] : null;
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
                     if ((string)$contact->user_id === $id_utilisateur) {

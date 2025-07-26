@@ -1,4 +1,11 @@
 <?php require_once '../controller.php'; ?>
+<?php
+// Rediriger si l'utilisateur courant n'est pas trouvé (session corrompue ou utilisateur supprimé)
+if (!isset($utilisateur_courant) || $utilisateur_courant === null) {
+    header('Location: ../auth/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -318,77 +325,10 @@
             </div>
 
             <!-- Panneau Contacts -->
-            <div id="contacts-panel" class="contacts-panel hidden">
-                <div class="panel-header">
-                    <button class="add-contact-btn" onclick="showAddContactModal()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"/>
-                        </svg>
-                        Ajouter un contact
-                    </button>
-                </div>
-                <div class="chat-list">
-                    <?php foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact): 
-                        $contact_user = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']")[0]; ?>
-                        <div class="chat-item" onclick="openChat('contact:<?php echo $contact->id; ?>')">
-                            <div class="chat-avatar">
-                                <?php if ($contact_user && $contact_user->profile_photo && $contact_user->profile_photo != 'default.jpg'): ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($contact_user->profile_photo); ?>" alt="Avatar">
-                                <?php else: ?>
-                                    <img src="/placeholder.svg?height=48&width=48&text=<?php echo strtoupper(substr($contact->contact_name, 0, 1)); ?>" alt="Avatar">
-                                <?php endif; ?>
-                                <div class="online-indicator"></div>
-                            </div>
-                            <div class="chat-info">
-                                <div class="chat-header">
-                                    <span class="chat-name"><?php echo htmlspecialchars($contact->contact_name); ?></span>
-                                </div>
-                                <div class="chat-preview">
-                                    <span class="last-message"><?php echo htmlspecialchars($contact->contact_telephone); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+            <?php include 'contacts_view.php'; ?>
 
             <!-- Panneau Groupes -->
-            <div id="groups-panel" class="groups-panel hidden">
-                <div class="panel-header">
-                    <button class="add-group-btn" onclick="showCreateGroupModal()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z"/>
-                        </svg>
-                        Créer un groupe
-                    </button>
-                </div>
-                <div class="chat-list">
-                    <?php foreach ($groupes->xpath("//group[member_id='$id_utilisateur']") as $group): ?>
-                        <div class="chat-item" onclick="openChat('group:<?php echo $group->id; ?>')">
-                            <div class="chat-avatar">
-                                <?php if ($group->group_photo && $group->group_photo != 'default.jpg'): ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($group->group_photo); ?>" alt="Avatar">
-                                <?php else: ?>
-                                    <img src="/placeholder.svg?height=48&width=48&text=<?php echo strtoupper(substr($group->name, 0, 1)); ?>" alt="Avatar">
-                                <?php endif; ?>
-                            </div>
-                            <div class="chat-info">
-                                <div class="chat-header">
-                                    <span class="chat-name"><?php echo htmlspecialchars($group->name); ?></span>
-                                </div>
-                                <div class="chat-preview">
-                                    <span class="last-message">
-                                        <?php 
-                                        $member_count = is_array($group->member_id) ? count($group->member_id) : 1;
-                                        echo $member_count . ' membre' . ($member_count > 1 ? 's' : '');
-                                        ?>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
+            <?php include 'groups_view.php'; ?>
         </div>
 
         <!-- Zone de chat -->
@@ -517,8 +457,12 @@
                             </div>
                             <div class="profile-form">
                                 <div class="form-group">
-                                    <label for="username">Username</label>
+                                    <label for="username">Prénom</label>
                                     <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($utilisateur_courant->username); ?>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nom">Nom</label>
+                                    <input type="text" id="nom" name="nom" value="<?php echo htmlspecialchars($utilisateur_courant->nom); ?>" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="telephone">Téléphone</label>
@@ -544,7 +488,7 @@
                 <button class="modal-close" onclick="closeAddContactModal()">×</button>
             </div>
             <form action="../api.php" method="post">
-                <input type="hidden" name="action" value="ajouter_contact">
+                <input type="hidden" name="action" value="add_contact">
                 <div class="modal-content">
                     <div class="form-group">
                         <label for="contact_name">Nom du contact</label>
@@ -552,11 +496,7 @@
                     </div>
                     <div class="form-group">
                         <label for="contact_telephone">Numéro de téléphone</label>
-                        <input type="tel" id="contact_telephone" name="contact_telephone"
-                                pattern="(77|70|78|76)[0-9]{7}"
-                                title="Numéro doit commencer par 77, 70, 78 ou 76 suivi de 7 chiffres"
-                                placeholder="Ex: 770123456"
-                                required/>
+                        <input type="tel" id="contact_telephone" name="contact_telephone" placeholder="Ex: +221701234567" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -575,7 +515,7 @@
                 <button class="modal-close" onclick="closeCreateGroupModal()">×</button>
             </div>
             <form action="../api.php" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="creer_groupe">
+                <input type="hidden" name="action" value="create_group">
                 <div class="modal-content">
                     <div class="form-group">
                         <label for="group_name">Nom du groupe</label>
@@ -840,7 +780,7 @@
             </div>
         </div>
     </div>
-<script src="../assets/js/scripts.js"></script>
+<script src="../assets/js/global.js"></script>
     <!-- Formulaires cachés pour les actions -->
     <form id="deleteContactForm" action="../api.php" method="post" style="display: none;">
         <input type="hidden" name="action" value="delete_contact">
@@ -856,7 +796,6 @@
         <input type="hidden" name="action" value="leave_group">
         <input type="hidden" name="id_group" id="groupIdToLeave">
     </form>
-    <script src="../assets/js/scripts.js"></script>
-    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/script.js"></script>
 </body>
 </html>
