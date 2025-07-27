@@ -39,7 +39,7 @@
 <!-- Formulaire d'édition caché -->
 <div id="formulaireEditionContact" style="display: none;">
     <form action="../api.php" method="post" class="modern-form">
-        <input type="hidden" name="action" value="editer_contact">
+        <input type="hidden" name="action" value="modifier_contact">
         <input type="hidden" name="contact_id" id="idEditionContact">
         <div class="form-group">
             <label class="form-label">Nouveau nom du contact</label>
@@ -83,10 +83,10 @@
                 </div>
                 
                 <div class="item-actions">
-                    <button type="button" onclick="afficherFormulaireEditionContact('<?php echo $contact->id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-secondary btn-small">
+                    <button type="button" onclick="afficherFormulaireEditionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-secondary btn-small">
                         ✏️
                     </button>
-                    <button type="button" onclick="confirmerSuppressionContact('<?php echo $contact->id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-danger btn-small">
+                    <button type="button" onclick="confirmerSuppressionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-danger btn-small">
                         🗑️
                     </button>
                 </div>

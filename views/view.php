@@ -158,7 +158,7 @@
             <div class="sidebar-header">
                 <div class="user-info">
                     <h1>WaxTaan</h1>
-                    <p class="user-welcome">Bienvenue, <?php echo htmlspecialchars($utilisateur_courant->prenom . ' ' . $utilisateur_courant->nom); ?>!</p>
+                    <p class="user-welcome">Bienvenue, <?php echo htmlspecialchars($utilisateur_courant->username); ?>!</p>
                     <a href="../auth/logout.php" class="logout-btn">
                         <span>🚪</span>
                         Déconnexion
@@ -222,7 +222,7 @@
                 list($type, $id) = explode(':', $current_conversation);
                 if ($type === 'contact') {
                     // Récupérer les informations du contact par son ID
-                    $contact_info_result = $contacts->xpath("//contact[id='$id']");
+                    $contact_info_result = $contacts->xpath("//contact[contact_id='$id']");
                     $contact_info = !empty($contact_info_result) ? $contact_info_result[0] : null;
                     
                     if ($contact_info) {
@@ -383,7 +383,7 @@
                         <input type="hidden" name="recipient_type" value="<?php echo isset($type) ? $type : ''; ?>">
                         
                         <div class="input-container">
-                            <textarea name="message" class="message-input" placeholder="Tapez votre message..." rows="1" ></textarea>
+                            <textarea name="content" class="message-input" placeholder="Tapez votre message..." rows="1" ></textarea>
                             
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" class="file-input" accept="image/*,video/*,application/*">

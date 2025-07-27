@@ -176,10 +176,13 @@ function editerContact(idContact, nomContact, telephoneContact) {
 }
 
 function afficherFormulaireEditionContact(idContact, nomContact) {
+     console.log(">>> ID transmis :", idContact);
+    console.log(">>> Nom transmis :", nomContact);
     document.getElementById('idEditionContact').value = idContact;
     document.getElementById('nomEditionContact').value = nomContact;
     document.getElementById('formulaireEditionContact').style.display = 'block';
 }
+
 function cacherFormulaireEditionContact() {
     document.getElementById('formulaireEditionContact').style.display = 'none';
 }
@@ -447,11 +450,11 @@ function afficherFormulaireAjoutContact() {
 function cacherFormulaireAjoutContact() {
     document.getElementById('formulaireAjoutContact').style.display = 'none';
 }
-function afficherFormulaireEditionContact(id, nom) {
-    document.getElementById('formulaireEditionContact').style.display = 'block';
-    document.getElementById('idEditionContact').value = id;
-    document.getElementById('nomEditionContact').value = nom;
-}
+// function afficherFormulaireEditionContact(id, nom) {
+//     document.getElementById('formulaireEditionContact').style.display = 'block';
+//     document.getElementById('idEditionContact').value = id;
+//     document.getElementById('nomEditionContact').value = nom;
+// }
 function cacherFormulaireEditionContact() {
     document.getElementById('formulaireEditionContact').style.display = 'none';
 }

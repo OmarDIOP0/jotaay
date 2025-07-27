@@ -8,7 +8,7 @@ $utilisateur_courant = $resultat_utilisateur ? $resultat_utilisateur[0] : null;
 
 function obtenirIdUtilisateurParTelephone($utilisateurs, $telephone) {
     $utilisateur = $utilisateurs->xpath("//user[telephone='$telephone']")[0];
-    return $utilisateur ? (string)$utilisateur->id : null;
+    return $utilisateur ? (string)$utilisateur->user_id : null;
 }
 
 function obtenirTelephoneParIdUtilisateur($utilisateurs, $id_utilisateur) {

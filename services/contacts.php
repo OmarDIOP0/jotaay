@@ -39,7 +39,7 @@ switch($action){
                 
                 // Ajouter le contact
                 $contact = $contacts->addChild('contact');
-                $contact->addChild('id', uniqid());
+                $contact->addChild('contact_id', uniqid());
                 $contact->addChild('user_id', $id_utilisateur);
                 $contact->addChild('contact_name', $contact_name);
                 $contact->addChild('contact_telephone', $contact_telephone);
@@ -95,7 +95,7 @@ switch($action){
                 $contact_id = htmlspecialchars($_POST['contact_id']);
                 $nouveau_nom = htmlspecialchars($_POST['contact_name']);
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$contact_id']")[0];
+                $contact = $contacts->xpath("//contact[contact_id='$contact_id']")[0];
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
                     if ((string)$contact->user_id === $id_utilisateur) {

@@ -10,14 +10,14 @@ switch($action){
      case 'envoyer_message':
             if (isset($_POST['destinataire'], $_POST['message'], $_POST['type_destinataire'])) {
                 $message = $messages->addChild('message');
-                $message->addChild('id', uniqid());
+                $message->addChild('message_id', uniqid());
                 $message->addChild('sender_id', $id_utilisateur);
                 if ($_POST['type_destinataire'] === 'contact') {
                     $message->addChild('recipient', htmlspecialchars($_POST['destinataire']));
                 } elseif ($_POST['type_destinataire'] === 'groupe') {
                     $message->addChild('recipient_group', htmlspecialchars($_POST['destinataire']));
                 }
-                $message->addChild('content', htmlspecialchars($_POST['message']));
+                $message->addChild('content', htmlspecialchars($_POST['content']));
                 if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] === UPLOAD_ERR_OK) {
                     $upload_dir = 'uploads/';
                     $nom_fichier = uniqid() . '_' . basename($_FILES['fichier']['name']);
@@ -33,27 +33,24 @@ switch($action){
             header('Location: views/view.php?conversation=' . ($_POST['type_destinataire'] === 'groupe' ? 'groupe:' : 'contact:') . urlencode($_POST['destinataire']));
             exit;
          case 'send_message':
-            if (isset($_POST['message'], $_POST['recipient'], $_POST['recipient_type'])) {
-                $message_content = htmlspecialchars($_POST['message']);
+            if (isset($_POST['content'], $_POST['recipient'], $_POST['recipient_type'])) {
+                $message_content = htmlspecialchars($_POST['content']);
                 $recipient = htmlspecialchars($_POST['recipient']);
                 $recipient_type = htmlspecialchars($_POST['recipient_type']);
                 
                 // Créer un nouveau message
                 $message = $messages->addChild('message');
-                $message->addChild('id', uniqid());
+                $message->addChild('message_id', uniqid());
                 $message->addChild('sender_id', $id_utilisateur);
-                $message->addChild('content', $message_content);
-                $message->addChild('timestamp', date('Y-m-d\TH:i:s'));
-                $message->addChild('read_by', '');
-                
+
                 if ($recipient_type === 'contact') {
-                    // Message vers un contact (utilise le numéro de téléphone)
                     $message->addChild('recipient', $recipient);
                 } elseif ($recipient_type === 'groupe') {
-                    // Message vers un groupe
                     $message->addChild('recipient_group', $recipient);
                 }
-                
+
+                $message->addChild('content', $message_content);
+
                 // Gestion des fichiers
                 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
                     $upload_dir = 'uploads/';
@@ -63,6 +60,10 @@ switch($action){
                         $message->addChild('file', $nom_fichier);
                     }
                 }
+
+                $message->addChild('read_by', '');
+                $message->addAttribute('timestamp', date('Y-m-d\TH:i:s'));
+
                 
                 // Sauvegarder le message
                 $resultat = $messages->asXML('xmls/messages.xml');
