@@ -46,11 +46,9 @@ switch($action){
             if (isset($_POST['group_id'])) {
                 $group_id = htmlspecialchars($_POST['group_id']);
                 
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+                $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
                 
                 if ($groupe) {
-                    // Vérifier que l'utilisateur connecté est l'admin du groupe
                     if ((string)$groupe->admin_id === $id_utilisateur) {
                         // Supprimer le groupe
                     $dom = dom_import_simplexml($groupe);
@@ -250,7 +248,7 @@ switch($action){
             if (isset($_POST['group_id'])) {
                 $group_id = htmlspecialchars($_POST['group_id']);
                 // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+                $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
                 if ($groupe) {
                     // Vérifier que l'utilisateur est membre du groupe
                     $est_membre = false;

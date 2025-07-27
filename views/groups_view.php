@@ -152,9 +152,9 @@ foreach ($groupes->group as $groupe) {
                     $est_coadmin_membre = isset($groupe->coadmins) && in_array($id_membre, explode(',', (string)$groupe->coadmins));
                     echo "<li>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom);
                     if ($est_coadmin_membre) {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer co-admin</button></form>";
+                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_coadmin'><input type='hidden' name='group_id' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer co-admin</button></form>";
                     } else {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='ajouter_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-primary btn-small'>Ajouter co-admin</button></form>";
+                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='ajouter_coadmin'><input type='hidden' name='group_id' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-primary btn-small'>Ajouter co-admin</button></form>";
                     }
                     echo "</li>";
                 }
@@ -173,7 +173,7 @@ foreach ($groupes->group as $groupe) {
                 $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
                 if ($membre) {
                     echo "<li>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom);
-                    echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_membre'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_membre' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer</button></form>";
+                    echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_membre'><input type='hidden' name='group_id' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_membre' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer</button></form>";
                     echo "</li>";
                 }
             } ?>
@@ -188,32 +188,32 @@ foreach ($groupes->group as $groupe) {
         <p>Cette action est irréversible.</p>
         <form method="post" action="../api.php">
             <input type="hidden" name="action" value="supprimer_groupe">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
+            <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($groupe->group_id); ?>">
             <button type="submit" class="modern-btn btn-danger">Confirmer la suppression</button>
-            <button type="button" onclick="document.getElementById('supprimer-groupe-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
+            <button type="button" onclick="document.getElementById('supprimer-groupe-modal-<?php echo $groupe->group_id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
         </form>
     </div>
 </div>
 <!-- Quitter le groupe -->
 <div id="quitter-groupe-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
     <div class="modal-content">
-        <h3>Quitter le groupe "<?php echo htmlspecialchars($groupe->name); ?>" ?</h3>
+        <h3>Voulez vous quitter le groupe "<?php echo htmlspecialchars($groupe->group_name); ?>" ?</h3>
         <form method="post" action="../api.php">
             <input type="hidden" name="action" value="quitter_groupe">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
+            <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($groupe->group_id); ?>">
             <input type="hidden" name="id_utilisateur" value="<?php echo htmlspecialchars($id_utilisateur); ?>">
             <button type="submit" class="modern-btn btn-danger">Confirmer</button>
-            <button type="button" onclick="document.getElementById('quitter-groupe-modal-<?php echo $groupe->id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
+            <button type="button" onclick="document.getElementById('quitter-groupe-modal-<?php echo $groupe->group_id; ?>').style.display='none'" class="modern-btn btn-secondary">Annuler</button>
         </form>
     </div>
 </div>
 <!-- Ajouter un membre -->
 <div id="ajouter-membre-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
     <div class="modal-content">
-        <h3>Ajouter un membre au groupe : <?php echo htmlspecialchars($groupe->name); ?></h3>
+        <h3>Ajouter un membre au groupe : <?php echo htmlspecialchars($groupe->group_id); ?></h3>
         <form method="post" action="../api.php">
             <input type="hidden" name="action" value="ajouter_membre">
-            <input type="hidden" name="id_groupe" value="<?php echo htmlspecialchars($groupe->id); ?>">
+            <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($groupe->group_id); ?>">
             <div class="form-group">
                 <label for="id_nouveau_membre">Sélectionner un contact à ajouter :</label>
                 <select name="id_nouveau_membre" id="id_nouveau_membre" required>
