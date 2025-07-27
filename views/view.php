@@ -298,8 +298,8 @@
                             <?php if ($type === 'groupe' && $group_info) { ?>
                                 <?php 
                                 $nb_membres = 0;
-                                if (isset($group_info->member_id)) {
-                                    $nb_membres = count($group_info->member_id);
+                                if (isset($group_info->membre_id)) {
+                                    $nb_membres = count($group_info->membre_id);
                                 }
                                 echo $nb_membres; 
                                 ?> membres

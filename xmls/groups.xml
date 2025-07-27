@@ -11,16 +11,6 @@
         <membre_id>u002</membre_id>
         <membre_id>u003</membre_id>
     </group>
-    <group>
-        <group_id>688411a2a0284</group_id>
-        <group_name>Groupe1</group_name>
-        <group_description>Groupe de test</group_description>
-        <admin_id>687ff5a5962bd</admin_id>
-        <coadmins>687ff5a5962bd</coadmins>
-        <group_photo>groupe1.png</group_photo>
-        <member_id>771234567</member_id>
-        <member_id>780987654</member_id>
-    </group>
 <group>
     <group_id>6884141d2578f</group_id>
     <group_name>GRP2</group_name>
@@ -29,4 +19,12 @@
     <membre_id>771234567</membre_id>
     <membre_id>780987654</membre_id>
 </group>
-</groups>
+<group>
+    <group_id>68861dc26bf59</group_id>
+    <group_name>Groupe1</group_name>
+    <group_description/>
+    <admin_id>687ff5a5962bd</admin_id>
+    <group_photo>68861dc26bfb2_Pharmacy Logo with Hygieia Symbol.png</group_photo>
+    <membre_id/><membre_id/>
+</group>
+<group><group_id>68861fea423b0</group_id><group_name>GR1</group_name><group_description/><admin_id>687ff5a5962bd</admin_id><membre_id/><membre_id/></group><group><group_id>6886212233b76</group_id><group_name>GRP2</group_name><group_description/><admin_id>687ff5a5962bd</admin_id><group_photo>6886212233b92_Pharmacy Logo with Hygieia Symbol.png</group_photo><membre_id>687ff5a5962bd</membre_id><membre_id>u002</membre_id></group></groups>

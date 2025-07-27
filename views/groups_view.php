@@ -12,11 +12,11 @@
             <input type="hidden" name="action" value="creer_groupe">
             <div class="form-group">
                 <label class="form-label">Nom du groupe</label>
-                <input type="text" name="nom_groupe" class="form-input" placeholder="Nom du groupe" required>
+                <input type="text" name="group_name" class="form-input" placeholder="Nom du groupe" required>
             </div>
             <div class="form-group">
                 <label class="form-label">Photo du groupe</label>
-                <input type="file" name="photo_groupe" class="form-input" accept="image/*">
+                <input type="file" name="group_photo" class="form-input" accept="image/*">
             </div>
             <div class="form-group">
                 <label class="form-label">Sélectionner les membres</label>
@@ -26,7 +26,7 @@
                         $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']")[0];
                         if ($utilisateur_contact) {
                             echo "<label style='display: flex; align-items: center; gap: 8px; padding: 8px; cursor: pointer; border-radius: 6px; transition: background 0.3s ease;' onmouseover='this.style.background=\"var(--bg-secondary)\"' onmouseout='this.style.background=\"transparent\"'>";
-                            echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->id) . "' style='margin: 0;'>";
+                            echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->user_id) . "' style='margin: 0;'>";
                             echo "<span>" . htmlspecialchars($contact->contact_name) . "</span>";
                             echo "</label>";
                         }
@@ -56,7 +56,7 @@
 // Afficher tous les groupes où l'utilisateur est membre OU admin
 foreach ($groupes->group as $groupe) {
     $est_membre = false;
-    foreach ($groupe->member_id as $id_membre) {
+    foreach ($groupe->membre_id as $id_membre) {
         if (trim((string)$id_membre) === trim((string)$id_utilisateur)) {
             $est_membre = true;
             break;
@@ -68,7 +68,7 @@ foreach ($groupes->group as $groupe) {
     $est_coadmin = in_array(trim((string)$id_utilisateur), array_map('trim', $coadmins));
     $peut_gerer = $est_admin || $est_coadmin;
     $ids_membres = [];
-    foreach ($groupe->member_id as $id_membre) {
+    foreach ($groupe->membre_id as $id_membre) {
         $ids_membres[] = trim((string)$id_membre);
     }
     $id_admin = trim((string)$groupe->id_admin);
@@ -122,7 +122,7 @@ foreach ($groupes->group as $groupe) {
         <ul>
             <?php
             foreach ($ids_uniques as $id_membre) {
-                $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
+                $membre = $utilisateurs->xpath("//user[user_id='$id_membre']")[0];
                 if ($membre) {
                     $est_admin_membre = ($id_admin === $id_membre);
                     $coadmins_membre = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
@@ -145,16 +145,16 @@ foreach ($groupes->group as $groupe) {
     <div class="modal-content">
         <h3>Gérer les co-admins : <?php echo htmlspecialchars($groupe->name); ?></h3>
         <ul>
-            <?php foreach ($groupe->member_id as $id_membre) {
+            <?php foreach ($groupe->membre_id as $id_membre) {
                 if ($id_membre == $groupe->id_admin) continue;
                 $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
                 if ($membre) {
                     $est_coadmin_membre = isset($groupe->coadmins) && in_array($id_membre, explode(',', (string)$groupe->coadmins));
                     echo "<li>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom);
                     if ($est_coadmin_membre) {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_coadmin' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer co-admin</button></form>";
+                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='retirer_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-danger btn-small'>Retirer co-admin</button></form>";
                     } else {
-                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='ajouter_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='id_coadmin' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-primary btn-small'>Ajouter co-admin</button></form>";
+                        echo " <form method='post' action='../api.php' style='display:inline;'><input type='hidden' name='action' value='ajouter_coadmin'><input type='hidden' name='id_groupe' value='".htmlspecialchars($groupe->id)."'><input type='hidden' name='coadmins' value='".htmlspecialchars($id_membre)."'><button type='submit' class='modern-btn btn-primary btn-small'>Ajouter co-admin</button></form>";
                     }
                     echo "</li>";
                 }
@@ -168,7 +168,7 @@ foreach ($groupes->group as $groupe) {
     <div class="modal-content">
         <h3>Retirer un membre du groupe : <?php echo htmlspecialchars($groupe->name); ?></h3>
         <ul>
-            <?php foreach ($groupe->member_id as $id_membre) {
+            <?php foreach ($groupe->membre_id as $id_membre) {
                 if ($id_membre == $groupe->id_admin || $id_membre == $id_utilisateur) continue;
                 $membre = $utilisateurs->xpath("//user[id='$id_membre']")[0];
                 if ($membre) {
@@ -182,7 +182,7 @@ foreach ($groupes->group as $groupe) {
     </div>
 </div>
 <!-- Supprimer le groupe -->
-<div id="supprimer-groupe-modal-<?php echo $groupe->id; ?>" class="image-modal" style="display:none;">
+<div id="supprimer-groupe-modal-<?php echo $groupe->group_id; ?>" class="image-modal" style="display:none;">
     <div class="modal-content">
         <h3>Supprimer le groupe "<?php echo htmlspecialchars($groupe->name); ?>" ?</h3>
         <p>Cette action est irréversible.</p>
