@@ -218,4 +218,4 @@ foreach ($discussions as $discussion) {
     </div>
 <?php } ?>
 </div>
-<script src="../js/global.js"></script> 
+<script src="/assets/js/global.js"></script> 

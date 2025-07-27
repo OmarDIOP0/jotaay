@@ -7,19 +7,18 @@
         </button>
     </div>
     
-    <!-- Formulaire d'ajout caché -->
     <div id="formulaireAjoutContact" style="display: none;">
         <form action="/api.php" method="post" class="modern-form">
             <input type="hidden" name="action" value="ajouter_contact">
             
             <div class="form-group">
                 <label class="form-label">Nom du contact</label>
-                <input type="text" name="nom_contact" class="form-input" placeholder="Nom du contact" required>
+                <input type="text" name="contact_name" class="form-input" placeholder="Nom du contact" required>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Numéro de téléphone</label>
-                <input type="text" name="telephone_contact" class="form-input" pattern="(77|70|78|76)[0-9]{7}" title="Numéro doit commencer par 77, 70, 78 ou 76 suivi de 7 chiffres" placeholder="ex: 771234567" required>
+                <input type="text" name="contact_telephone" class="form-input" pattern="(77|70|78|76)[0-9]{7}" title="Numéro doit commencer par 77, 70, 78 ou 76 suivi de 7 chiffres" placeholder="ex: 771234567" required>
                 <small class="form-help">Le numéro doit correspondre à un utilisateur existant</small>
             </div>
             
@@ -44,7 +43,7 @@
         <input type="hidden" name="id_contact" id="idEditionContact">
         <div class="form-group">
             <label class="form-label">Nouveau nom du contact</label>
-            <input type="text" name="nom_contact" id="nomEditionContact" class="form-input" required>
+            <input type="text" name="contact_name" id="nomEditionContact" class="form-input" required>
         </div>
         <div class="form-actions">
             <button type="submit" class="modern-btn btn-primary">
@@ -103,4 +102,4 @@
         </div>
     <?php } ?>
 </div>
-<script src="../js/global.js"></script>
+<script src="/assets/js/global.js"></script>

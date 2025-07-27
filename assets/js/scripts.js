@@ -653,7 +653,7 @@ function searchInChat() {
 
 function logout() {
   showConfirmationModal("Déconnexion", "Êtes-vous sûr de vouloir vous déconnecter ?", () => {
-    window.location.href = "../connexion/logout.php"
+    window.location.href = "../auth/logout.php"
   })
 }
 

@@ -1,8 +1,8 @@
 <!-- <div class="profile-section">
     <div class="profile-header">
         <div class="profile-avatar">
-            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'JOTAAY.png') { ?>
-                <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->photo_profil); ?>" alt="Photo de profil">
+            <?php if ($utilisateur_courant->profile_photo && $utilisateur_courant->profile_photo != 'JOTAAY.png') { ?>
+                <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->profile_photo); ?>" alt="Photo de profil">
             <?php } else { ?>
                 <?php echo strtoupper(substr($utilisateur_courant->username, 0, 1)); ?>
             <?php } ?>
@@ -42,7 +42,7 @@
         </div>
         <div class="form-group">
             <label class="form-label">Photo de profil</label>
-            <input type="file" name="photo_profil" class="form-input" accept="image/*">
+            <input type="file" name="profile_photo" class="form-input" accept="image/*">
         </div>
         <button type="submit" class="modern-btn btn-primary">
             <span>💾</span> Mettre à jour
@@ -56,8 +56,8 @@
 <div class="profile-section">
     <div class="profile-header">
         <div class="profile-avatar">
-            <?php if ($utilisateur_courant->photo_profil && $utilisateur_courant->photo_profil != 'default.jpg') { ?>
-                <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->photo_profil); ?>" alt="Photo de profil">
+            <?php if ($utilisateur_courant->profile_photo && $utilisateur_courant->profile_photo != 'default.jpg') { ?>
+                <img src="../uploads/<?php echo htmlspecialchars($utilisateur_courant->profile_photo); ?>" alt="Photo de profil">
             <?php } else { ?>
                 <?php echo strtoupper(substr($utilisateur_courant->username, 0, 1)); ?>
             <?php } ?>
@@ -73,19 +73,8 @@
     <form id="formulaireEditionProfil" action="../api.php" method="post" enctype="multipart/form-data" class="modern-form profile-edit-form">
         <input type="hidden" name="action" value="mettre_a_jour_profil">
         <div class="form-group">
-            <label class="form-label">Prénom</label>
+            <label class="form-label">Nom d'utilisateur</label>
             <input type="text" name="username" value="<?php echo htmlspecialchars($utilisateur_courant->username); ?>" class="form-input" placeholder="Votre prénom">
-        </div>
-        <div class="form-group">
-            <label class="form-label">Sexe</label>
-            <select name="sexe" class="form-input">
-                <option value="M" <?php echo $utilisateur_courant->sexe == 'M' ? 'selected' : ''; ?>>Masculin</option>
-                <option value="F" <?php echo $utilisateur_courant->sexe == 'F' ? 'selected' : ''; ?>>Féminin</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="form-label">Âge</label>
-            <input type="number" name="age" value="<?php echo htmlspecialchars($utilisateur_courant->age); ?>" class="form-input" placeholder="Votre âge">
         </div>
         <div class="form-group">
             <label class="form-label">Téléphone</label>
@@ -93,7 +82,7 @@
         </div>
         <div class="form-group">
             <label class="form-label">Photo de profil</label>
-            <input type="file" name="photo_profil" class="form-input" accept="image/*">
+            <input type="file" name="profile_photo" class="form-input" accept="image/*">
         </div>
         <button type="submit" class="modern-btn btn-primary">
             <span>💾</span> Mettre à jour

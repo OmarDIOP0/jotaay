@@ -242,4 +242,4 @@ foreach ($groupes->group as $groupe) {
 </div>
 <?php } ?>
 </div> 
-<script src="../js/global.js"></script> 
+<script src="/assets/js/global.js"></script> 
