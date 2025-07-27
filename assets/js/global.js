@@ -460,7 +460,7 @@ function confirmerSuppressionContact(id, nom) {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '../api.php';
-        form.innerHTML = '<input type="hidden" name="action" value="supprimer_contact"><input type="hidden" name="id_contact" value="' + id + '">';
+        form.innerHTML = '<input type="hidden" name="action" value="supprimer_contact"><input type="hidden" name="contact_id" value="' + id + '">';
         document.body.appendChild(form);
         form.submit();
     }

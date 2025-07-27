@@ -11,7 +11,7 @@ switch($action){
     case 'ajouter_contact':
             // Ajouter un contact
             if (isset($_POST['contact_name'], $_POST['contact_telephone'])) {
-                $nom_contact = htmlspecialchars($_POST['contact_name']);
+                $contact_name = htmlspecialchars($_POST['contact_name']);
                 $contact_telephone = htmlspecialchars($_POST['contact_telephone']);
                 
                 // Vérifier si le contact existe déjà pour cet utilisateur
@@ -41,7 +41,7 @@ switch($action){
                 $contact = $contacts->addChild('contact');
                 $contact->addChild('id', uniqid());
                 $contact->addChild('user_id', $id_utilisateur);
-                $contact->addChild('contact_name', $nom_contact);
+                $contact->addChild('contact_name', $contact_name);
                 $contact->addChild('contact_telephone', $contact_telephone);
                 
                 // Sauvegarder le fichier
@@ -59,11 +59,11 @@ switch($action){
 
     case 'supprimer_contact':
             // Supprimer un contact
-            if (isset($_POST['id_contact'])) {
-                $id_contact = htmlspecialchars($_POST['id_contact']);
+            if (isset($_POST['contact_id'])) {
+                $contact_id = htmlspecialchars($_POST['contact_id']);
                 
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact = $contacts->xpath("//contact[id='$contact_id']")[0];
                 
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
@@ -91,11 +91,11 @@ switch($action){
             }
             exit;
      case 'modifier_contact':
-            if (isset($_POST['id_contact'], $_POST['nom_contact'])) {
-                $id_contact = htmlspecialchars($_POST['id_contact']);
-                $nouveau_nom = htmlspecialchars($_POST['nom_contact']);
+            if (isset($_POST['contact_id'], $_POST['contact_name'])) {
+                $contact_id = htmlspecialchars($_POST['contact_id']);
+                $nouveau_nom = htmlspecialchars($_POST['contact_name']);
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$id_contact']")[0];
+                $contact = $contacts->xpath("//contact[id='$contact_id']")[0];
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact
                     if ((string)$contact->user_id === $id_utilisateur) {

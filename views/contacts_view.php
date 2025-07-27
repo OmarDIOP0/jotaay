@@ -40,7 +40,7 @@
 <div id="formulaireEditionContact" style="display: none;">
     <form action="../api.php" method="post" class="modern-form">
         <input type="hidden" name="action" value="editer_contact">
-        <input type="hidden" name="id_contact" id="idEditionContact">
+        <input type="hidden" name="contact_id" id="idEditionContact">
         <div class="form-group">
             <label class="form-label">Nouveau nom du contact</label>
             <input type="text" name="contact_name" id="nomEditionContact" class="form-input" required>
