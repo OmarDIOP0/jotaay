@@ -74,7 +74,7 @@ switch($action){
                         // Pour les contacts, récupérer l'ID du contact à partir du numéro de téléphone
                         $contact_info = $contacts->xpath("//contact[contact_telephone='$recipient' and user_id='$id_utilisateur']")[0];
                         if ($contact_info) {
-                            $redirect_url = 'views/view.php?conversation=contact:' . urlencode($contact_info->id) . '&tab=discussions';
+                            $redirect_url = 'views/view.php?conversation=contact:' . urlencode($contact_info->contact_id) . '&tab=discussions';
                         } else {
                             $redirect_url = 'views/view.php?tab=discussions';
                         }

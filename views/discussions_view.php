@@ -156,7 +156,7 @@ foreach ($discussions as $discussion) {
             </div>
         </div>
         <div class="item-actions">
-            <a href="?conversation=contact:<?php echo urlencode($contact->id); ?>&tab=discussions" class="modern-btn btn-primary btn-small">
+            <a href="?conversation=contact:<?php echo urlencode($contact->contact_id); ?>&tab=discussions" class="modern-btn btn-primary btn-small">
                 💬 Ouvrir
             </a>
         </div>
