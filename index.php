@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WaxTaan - Messagerie du Sénégal</title>
+    <title>Jotaay - Messagerie du Sénégal</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/home.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +16,10 @@
         <nav class="navbar">
             <div class="nav-container">
                 <div class="logo">
-                    <span class="logo-icon">💬</span>
-                    <span class="logo-text">WaxTaan</span>
+                    <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span class="logo-text">Jotaay</span>
                 </div>
                 <div class="nav-menu">
                     <a href="auth/login.php" class="nav-btn login">Se connecter</a>
@@ -39,7 +41,7 @@
                     <span class="highlight">vos proches</span>
                 </h1>
                 <p class="hero-subtitle">
-                    WaxTaan est la messagerie moderne conçue pour les Sénégalais. 
+                    Jotaay est la messagerie moderne conçue pour les Sénégalais. 
                     Simple, rapide et sécurisée.
                 </p>
                 <div class="hero-actions">
@@ -86,7 +88,7 @@
     <section class="features-section">
         <div class="container">
             <div class="section-header">
-                <h2>Pourquoi choisir WaxTaan ?</h2>
+                <h2>Pourquoi choisir Jotaay ?</h2>
                 <p>Une messagerie pensée pour vous</p>
             </div>
             <div class="features-grid">
@@ -101,12 +103,20 @@
                     <p>Vos conversations restent privées et protégées</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">👥</div>
+                    <svg class="feature-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
                     <h3>Groupes</h3>
                     <p>Créez des groupes pour famille, amis et collègues</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon">📱</div>
+                    <svg class="feature-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
                     <h3>Simple</h3>
                     <p>Interface intuitive et facile à utiliser</p>
                 </div>
@@ -119,7 +129,7 @@
         <div class="container">
             <div class="cta-content">
                 <h2>Prêt à commencer ?</h2>
-                <p>Rejoignez des milliers d'utilisateurs qui font confiance à WaxTaan</p>
+                <p>Rejoignez des milliers d'utilisateurs qui font confiance à Jotaay</p>
                 <a href="connexion/register.php" class="cta-button">
                     Créer mon compte gratuitement
                 </a>
@@ -133,8 +143,10 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="logo">
-                        <span class="logo-icon">💬</span>
-                        <span class="logo-text">WaxTaan</span>
+                        <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span class="logo-text">Jotaay</span>
                     </div>
                     <p>La messagerie moderne du Sénégal</p>
                 </div>
@@ -146,7 +158,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 WaxTaan. Fait avec Fait avec le groupe 2 de XML❤️ au Sénégal</p>
+                <p>&copy; 2024 Jotaay. Fait avec Fait avec le groupe 2 de XML❤️ au Sénégal</p>
             </div>
         </div>
     </footer>

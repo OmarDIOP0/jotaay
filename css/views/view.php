@@ -8,7 +8,7 @@
     <title>Jotaay - Messagerie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/app.css">
 </head>
 <body>
@@ -36,7 +36,7 @@
                 $error_message = 'Erreur : Ce contact existe déjà dans votre liste.';
                 break;
             case 'user_not_found':
-                $error_message = 'Erreur : Aucun utilisateur trouvé avec ce numéro de téléphone.';
+                $error_message = 'Erreur : Aucun utilisateur trouvé avec ce numéro de télételephone.';
                 break;
             case 'cannot_add_self':
                 $error_message = 'Erreur : Vous ne pouvez pas vous ajouter vous-même comme contact.';
@@ -102,7 +102,7 @@
                 $error_message = 'Une erreur est survenue.';
         }
         if ($error_message) {
-            echo "<div class='notification' style='background: #f44336;'>$error_message</div>";
+            echo "<div style='position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(240, 147, 251, 0.3); z-index: 1000;'>$error_message</div>";
         }
     }
     
@@ -146,7 +146,7 @@
                 $success_message = 'Opération réussie !';
         }
         if ($success_message) {
-            echo "<div class='notification' style='background: #4caf50;'>$success_message</div>";
+            echo "<div style='position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 25px rgba(74, 222, 128, 0.3); z-index: 1000;'>$success_message</div>";
         }
     }
     ?>
@@ -170,61 +170,38 @@
                         <h2 class="user-name"><?php echo htmlspecialchars($utilisateur_courant->username); ?></h2>
                         <p class="user-status">En ligne</p>
                     </div>
-                </div>
-                <div class="user-actions">
-                    <button class="action-btn" onclick="afficherModalEditionProfil()" title="Paramètres">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3"></circle>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                        </svg>
-                    </button>
-                    <button onclick="confirmerDeconnexion()" class="action-btn" title="Déconnexion">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                            <polyline points="16,17 21,12 16,7"></polyline>
-                            <line x1="21" y1="12" x2="9" y2="12"></line>
-                        </svg>
-                    </button>
+                    <div class="user-actions">
+                        <button class="action-btn" title="Paramètres">
+                            <span>⚙️</span>
+                        </button>
+                        <a href="../auth/logout.php" class="action-btn" title="Déconnexion">
+                            <span>🔁</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Barre de recherche -->
             <div class="search-container">
                 <div class="search-input-wrapper">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.35-4.35"></path>
-                    </svg>
+                    <span class="search-icon">🔍</span>
                     <input type="text" class="search-input" placeholder="Rechercher ou commencer une nouvelle discussion">
                 </div>
             </div>
 
             <!-- Menu de navigation -->
             <div class="sidebar-nav">
-                <button class="nav-tab active" data-tab="chats">
-                    <svg class="nav-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
+                <button class="nav-tab" data-tab="chats">
+                    <span class="nav-tab-icon">💬</span>
                     <span class="nav-tab-text">Chats</span>
+                    <span class="nav-badge">2</span>
                 </button>
                 <button class="nav-tab" data-tab="contacts">
-                    <svg class="nav-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                    <span class="nav-tab-icon">👥</span>
                     <span class="nav-tab-text">Contacts</span>
                 </button>
-                <button class="nav-tab" data-tab="groups">
-                    <svg class="nav-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                <button class="nav-tab active" data-tab="groups">
+                    <span class="nav-tab-icon">🏠</span>
                     <span class="nav-tab-text">Groupes</span>
                 </button>
             </div>
@@ -232,128 +209,9 @@
             <!-- Contenu de la sidebar -->
             <div class="sidebar-content">
                 <!-- Onglet Chats -->
-                <div class="tab-panel active" id="chats-panel">
+                <div class="tab-panel" id="chats-panel">
                     <div class="chat-list">
-                        <?php
-                        // Récupérer toutes les conversations (contacts + groupes)
-                        $conversations = [];
-                        
-                        // Conversations avec contacts
-                        $contacts_utilisateur = $contacts->xpath("//contact[user_id='$id_utilisateur']");
-                        foreach ($contacts_utilisateur as $contact) {
-                            $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']");
-                            if (!empty($utilisateur_contact)) {
-                                $utilisateur_contact = $utilisateur_contact[0];
-                                $id_utilisateur_contact = obtenirIdUtilisateurParTelephone($utilisateurs, $contact->contact_telephone);
-                                $messages_conversation = $messages->xpath("//message[(sender_id='$id_utilisateur' and recipient='$contact->contact_telephone') or (sender_id='$id_utilisateur_contact' and recipient='$utilisateur_courant->telephone')]");
-                                
-                                $dernier_message = null;
-                                if (!empty($messages_conversation)) {
-                                    usort($messages_conversation, function($a, $b) {
-                                        return strtotime((string)$b->timestamp) - strtotime((string)$a->timestamp);
-                                    });
-                                    $dernier_message = $messages_conversation[0];
-                                }
-                                
-                                $conversations[] = [
-                                    'type' => 'contact',
-                                    'id' => $contact->contact_id,
-                                    'nom' => $contact->contact_name,
-                                    'photo' => $utilisateur_contact->profile_photo,
-                                    'dernier_message' => $dernier_message,
-                                    'timestamp' => $dernier_message ? (string)$dernier_message->timestamp : '0'
-                                ];
-                            }
-                        }
-                        
-                        // Conversations de groupes
-                        foreach ($groupes->group as $groupe) {
-                            $est_admin = ((string)$groupe->id_admin === $id_utilisateur);
-                            $est_membre = false;
-                            foreach ($groupe->member_id as $id_membre) {
-                                if ((string)$id_membre === $id_utilisateur) {
-                                    $est_membre = true;
-                                    break;
-                                }
-                            }
-                            
-                            if ($est_admin || $est_membre) {
-                                $messages_groupe = $messages->xpath("//message[recipient_group='{$groupe->id}']");
-                                $dernier_message = null;
-                                if (!empty($messages_groupe)) {
-                                    usort($messages_groupe, function($a, $b) {
-                                        return strtotime((string)$b->timestamp) - strtotime((string)$a->timestamp);
-                                    });
-                                    $dernier_message = $messages_groupe[0];
-                                }
-                                
-                                $conversations[] = [
-                                    'type' => 'groupe',
-                                    'id' => $groupe->id,
-                                    'nom' => $groupe->name,
-                                    'photo' => $groupe->group_photo ?? '',
-                                    'dernier_message' => $dernier_message,
-                                    'timestamp' => $dernier_message ? (string)$dernier_message->timestamp : '0'
-                                ];
-                            }
-                        }
-                        
-                        // Trier par timestamp décroissant
-                        usort($conversations, function($a, $b) {
-                            return strtotime($b['timestamp']) - strtotime($a['timestamp']);
-                        });
-                        
-                        foreach ($conversations as $conv) {
-                        ?>
-                        <div class="contact-item" onclick="window.location.href='?conversation=<?php echo $conv['type']; ?>:<?php echo $conv['id']; ?>'">
-                            <div class="contact-avatar">
-                                <?php if ($conv['photo'] && $conv['photo'] != 'default.jpg') { ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($conv['photo']); ?>" alt="Photo">
-                                <?php } else { ?>
-                                    <?php echo strtoupper(substr($conv['nom'], 0, 1)); ?>
-                                <?php } ?>
-                            </div>
-                            <div class="contact-info">
-                                <div class="contact-name">
-                                    <?php echo htmlspecialchars($conv['nom']); ?>
-                                    <?php if ($conv['type'] === 'groupe') { ?>
-                                        <span style="background: var(--primary-green); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">Groupe</span>
-                                    <?php } ?>
-                                </div>
-                                <div class="contact-meta">
-                                    <?php if ($conv['dernier_message']) { ?>
-                                        <?php 
-                                        $expediteur = $utilisateurs->xpath("//user[id='{$conv['dernier_message']->sender_id}']");
-                                        $expediteur = !empty($expediteur) ? $expediteur[0] : null;
-                                        $envoye_par_moi = $conv['dernier_message']->sender_id == $id_utilisateur;
-                                        ?>
-                                        <span style="font-size: 13px; color: var(--text-secondary);">
-                                            <?php echo $envoye_par_moi ? 'Vous: ' : ($expediteur && $conv['type'] === 'groupe' ? htmlspecialchars($expediteur->username . ': ') : ''); ?>
-                                            <?php echo htmlspecialchars(substr($conv['dernier_message']->content, 0, 30)); ?>
-                                            <?php if (strlen($conv['dernier_message']->content) > 30) echo '...'; ?>
-                                        </span>
-                                        <span style="font-size: 11px; color: var(--text-muted); margin-left: 8px;">
-                                            <?php echo date('H:i', strtotime($conv['timestamp'])); ?>
-                                        </span>
-                                    <?php } else { ?>
-                                        <span style="font-size: 13px; color: var(--text-muted);">Aucun message</span>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                        </div>
-                        <?php } ?>
-                        
-                        <?php if (empty($conversations)) { ?>
-                        <div class="empty-contacts">
-                            <svg class="empty-contacts-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-                            <h3 class="empty-contacts-title">Aucune conversation</h3>
-                            <p class="empty-contacts-message">
-                                Commencez à discuter avec vos contacts ou créez un groupe.
-                            </p>
-                        </div>
-                        <?php } ?>
+                        <!-- Liste des conversations récentes -->
                     </div>
                 </div>
 
@@ -363,7 +221,7 @@
                 </div>
 
                 <!-- Onglet Groupes -->
-                <div class="tab-panel" id="groups-panel">
+                <div class="tab-panel active" id="groups-panel">
                     <?php include 'groups_view.php'; ?>
                 </div>
             </div>
@@ -387,18 +245,10 @@
                     if ($contact_info) {
                         // Récupérer l'ID de l'utilisateur contact par son numéro de téléphone
                         $contact_user_id = obtenirIdUtilisateurParTelephone($utilisateurs, $contact_info->contact_telephone);
-                        $contact_user = $utilisateurs->xpath("//user[telephone='{$contact_info->contact_telephone}']");
-                        $contact_user = !empty($contact_user) ? $contact_user[0] : null;
                         
                         if ($contact_user_id) {
                             // Récupérer les messages entre les deux utilisateurs
                             $messages_to_show = $messages->xpath("//message[(sender_id='$id_utilisateur' and recipient='{$contact_info->contact_telephone}') or (sender_id='$contact_user_id' and recipient='$utilisateur_courant->telephone')]");
-                            
-                            // Trier les messages par timestamp
-                            usort($messages_to_show, function($a, $b) {
-                                return strtotime((string)$a->timestamp) - strtotime((string)$b->timestamp);
-                            });
-                            
                             // Marquer comme lus tous les messages reçus non lus
                             foreach ($messages->xpath("//message[sender_id='$contact_user_id' and recipient='$utilisateur_courant->telephone']") as $msg) {
                                 if (!isset($msg->read_by) || !in_array($id_utilisateur, explode(',', (string)$msg->read_by))) {
@@ -412,12 +262,12 @@
                         } else {
                             $messages_to_show = [];
                         }
-                        
-                        $conversation_name = $contact_info->contact_name;
-                        $conversation_avatar = $contact_user ? $contact_user->profile_photo : '';
                     } else {
                         $messages_to_show = [];
                     }
+                    
+                    $conversation_name = $contact_info ? $contact_info->contact_name : '';
+                    $conversation_avatar = $contact_info ? $contact_info->contact_telephone : '';
                 } elseif ($type === 'groupe') {
                     // Récupérer les informations du groupe
                     $groupe_info_result = $groupes->xpath("//group[id='$id']");
@@ -425,13 +275,7 @@
                     
                     if ($groupe_info) {
                         // Récupérer les messages du groupe
-                        $messages_to_show = $messages->xpath("//message[recipient_group='$id']");
-                        
-                        // Trier les messages par timestamp
-                        usort($messages_to_show, function($a, $b) {
-                            return strtotime((string)$a->timestamp) - strtotime((string)$b->timestamp);
-                        });
-                        
+                        $messages_to_show = $messages->xpath("//message[recipient_type='groupe' and recipient='$id']");
                         $conversation_name = $groupe_info->name;
                         $conversation_avatar = $groupe_info->group_photo ?? '';
                     }
@@ -488,11 +332,13 @@
                                             <?php } ?>
                                         </div>
                                     <?php } ?>
-                                    
-                                    <div class="message-meta">
-                                        <span class="message-time"><?php echo date('H:i', strtotime((string)$message->timestamp ?? 'now')); ?></span>
-                                    </div>
                                 </div>
+                                
+                                <?php if ($message->sender_id == $id_utilisateur) { ?>
+                                    <div class="message-meta" style="justify-content: flex-end; margin-top: 4px;">
+                                        <span class="message-time"><?php echo date('H:i', strtotime($message['timestamp'] ?? 'now')); ?></span>
+                                    </div>
+                                <?php } ?>
                             </div>
                         <?php } ?>
                     </div>
@@ -508,12 +354,12 @@
                                 <button type="button" class="attachment-btn">
                                     <span>📎</span>
                                 </button>
-                                <input type="file" name="file" class="file-input" accept="image/*,video/*,application/*">
+                                <input type="file" name="file" class="file-input" accept="image/*,video/*,application/*" style="display: none;">
                                 
                                 <textarea name="content" class="message-input" placeholder="Tapez un message..." rows="1"></textarea>
                                 
                                 <button type="button" class="emoji-btn">
-                                    <span>😊</span>
+                                    <span>🙂</span>
                                 </button>
                                 
                                 <button type="submit" class="send-btn">
@@ -529,20 +375,13 @@
                 ?>
                 <div class="welcome-container">
                     <div class="welcome-content">
-                        <svg class="welcome-icon" width="80" height="80" viewBox="0 0 24 24" fill="var(--primary-color)" stroke="none">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            <line x1="8" y1="9" x2="16" y2="9" stroke="white" stroke-width="2"/>
-                            <line x1="8" y1="12" x2="14" y2="12" stroke="white" stroke-width="2"/>
-                            <line x1="8" y1="15" x2="12" y2="15" stroke="white" stroke-width="2"/>
-                        </svg>
+                        <div class="welcome-icon">💬</div>
                         <h1 class="welcome-title">
                             Bienvenue sur<br>
                             <span class="welcome-brand">Jotaay</span>
                         </h1>
                         <p class="welcome-message">
-                            Sélectionnez une conversation pour<br>
-                            commencer à discuter avec vos contacts<br>
-                            et groupes.
+                            Sélectionnez une conversation pour commencer à discuter avec vos contacts et groupes.
                         </p>
                     </div>
                 </div>
@@ -552,13 +391,44 @@
         </div>
     </div>
 
+    <!-- Modal pour les actions de groupe -->
+    <div id="groupActionsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="groupActionsTitle">Actions de groupe</h3>
+                <button type="button" onclick="closeGroupActionsModal()" class="modal-close">&times;</button>
+            </div>
+            <div id="groupActionsContent" class="modal-body">
+                <!-- Le contenu sera chargé dynamiquement -->
+            </div>
+        </div>
+    </div>
+
     <!-- Modal pour afficher les images -->
     <div id="imageModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <img id="modalImage" src="/placeholder.svg" alt="Image" style="max-width: 100%; max-height: 80vh;">
+            <img id="modalImage" src="" alt="Image" style="max-width: 100%; max-height: 80vh;">
             <button type="button" onclick="closeImageModal()" class="modal-close">&times;</button>
         </div>
     </div>
+
+    <!-- Formulaire caché pour la suppression de contact -->
+    <form id="deleteContactForm" action="../api.php" method="post" style="display: none;">
+        <input type="hidden" name="action" value="delete_contact">
+        <input type="hidden" name="contact_id" id="contactIdToDelete">
+    </form>
+
+    <!-- Formulaire caché pour la suppression de groupe -->
+    <form id="deleteGroupForm" action="../api.php" method="post" style="display: none;">
+        <input type="hidden" name="action" value="delete_group">
+        <input type="hidden" name="id_group" id="groupIdToDelete">
+    </form>
+
+    <!-- Formulaire caché pour quitter un groupe -->
+    <form id="leaveGroupForm" action="../api.php" method="post" style="display: none;">
+        <input type="hidden" name="action" value="leave_group">
+        <input type="hidden" name="id_group" id="groupIdToLeave">
+    </form>
 
     <!-- Modal pour l'édition du profil -->
     <div id="profileEditModal" class="modal" style="display: none;">
@@ -620,17 +490,11 @@
                     
                     <div class="form-actions">
                         <button type="submit" class="modern-btn btn-primary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"></line>
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg>
+                            <span>➕</span>
                             Ajouter Contact
                         </button>
                         <button type="button" onclick="fermerModalAjoutContact()" class="modern-btn btn-secondary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
+                            <span>❌</span>
                             Annuler
                         </button>
                     </div>
@@ -656,17 +520,10 @@
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="modern-btn btn-primary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            Modifier
+                            <span>✏️</span> Modifier
                         </button>
                         <button type="button" onclick="fermerModalEditionContact()" class="modern-btn btn-secondary">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
+                            <span>❌</span>
                             Annuler
                         </button>
                     </div>
@@ -699,11 +556,10 @@
                         <div class="member-selection-container">
                             <?php
                             foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact) {
-                                $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']");
-                                if (!empty($utilisateur_contact)) {
-                                    $utilisateur_contact = $utilisateur_contact[0];
+                                $utilisateur_contact = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']")[0];
+                                if ($utilisateur_contact) {
                                     echo "<label class='member-checkbox'>";
-                                    echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->id) . "'>";
+                                    echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->user_id) . "'>";
                                     echo "<span>" . htmlspecialchars($contact->contact_name) . "</span>";
                                     echo "</label>";
                                 }
@@ -728,6 +584,7 @@
     </div>
 
     <!-- Modales pour les actions de groupe -->
+    <!-- Modal pour lister les membres -->
     <div id="groupMembersModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -735,7 +592,9 @@
                 <button type="button" onclick="fermerModalMembresGroupe()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupMembersContent"></div>
+                <div id="groupMembersContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalMembresGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Fermer
@@ -745,6 +604,7 @@
         </div>
     </div>
 
+    <!-- Modal pour gérer les co-admins -->
     <div id="groupCoAdminsModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -752,7 +612,9 @@
                 <button type="button" onclick="fermerModalCoAdminsGroupe()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupCoAdminsContent"></div>
+                <div id="groupCoAdminsContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalCoAdminsGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Fermer
@@ -762,6 +624,7 @@
         </div>
     </div>
 
+    <!-- Modal pour retirer un membre -->
     <div id="groupRemoveMemberModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -769,7 +632,9 @@
                 <button type="button" onclick="fermerModalRetirerMembre()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupRemoveMemberContent"></div>
+                <div id="groupRemoveMemberContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalRetirerMembre()" class="modern-btn btn-secondary">
                         <span>❌</span> Annuler
@@ -779,6 +644,7 @@
         </div>
     </div>
 
+    <!-- Modal pour ajouter un membre -->
     <div id="groupAddMemberModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -786,7 +652,9 @@
                 <button type="button" onclick="fermerModalAjouterMembre()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupAddMemberContent"></div>
+                <div id="groupAddMemberContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalAjouterMembre()" class="modern-btn btn-secondary">
                         <span>❌</span> Annuler
@@ -796,6 +664,7 @@
         </div>
     </div>
 
+    <!-- Modal pour supprimer le groupe -->
     <div id="groupDeleteModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -803,7 +672,9 @@
                 <button type="button" onclick="fermerModalSupprimerGroupe()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupDeleteContent"></div>
+                <div id="groupDeleteContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalSupprimerGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Annuler
@@ -813,6 +684,7 @@
         </div>
     </div>
 
+    <!-- Modal pour quitter le groupe -->
     <div id="groupLeaveModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -820,7 +692,9 @@
                 <button type="button" onclick="fermerModalQuitterGroupe()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupLeaveContent"></div>
+                <div id="groupLeaveContent">
+                    <!-- Le contenu sera chargé dynamiquement -->
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalQuitterGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Annuler
@@ -829,6 +703,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Champ caché pour le télételephone de l'utilisateur actuel -->
+    <input type="hidden" name="current_user_telephone" value="<?php echo $utilisateur_courant->telephone; ?>">
 
     <script src="../assets/js/global.js"></script>
 </body>

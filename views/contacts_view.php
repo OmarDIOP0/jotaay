@@ -1,75 +1,32 @@
-<div class="profile-section">
-    <div class="section-header">
-        <h2>Mes Contacts</h2>
-        <button type="button" onclick="afficherFormulaireAjoutContact()" class="modern-btn btn-primary">
-            <span>➕</span>
-            Ajouter un Contact
+<div class="contacts-container">
+    <!-- Bouton Ajouter un contact -->
+    <div class="add-contact-section">
+        <button type="button" onclick="afficherModalAjoutContact()" class="add-contact-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                <circle cx="20" cy="4" r="2" fill="currentColor"></circle>
+                <line x1="20" y1="3" x2="20" y2="5"></line>
+                <line x1="19" y1="4" x2="21" y2="4"></line>
+            </svg>
+            Ajouter un contact
         </button>
     </div>
-    
-    <div id="formulaireAjoutContact" style="display: none;">
-        <form action="/api.php" method="post" class="modern-form">
-            <input type="hidden" name="action" value="ajouter_contact">
-            
-            <div class="form-group">
-                <label class="form-label">Nom du contact</label>
-                <input type="text" name="contact_name" class="form-input" placeholder="Nom du contact" required>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Numéro de téléphone</label>
-                <input type="text" name="contact_telephone" class="form-input" pattern="(77|70|78|76)[0-9]{7}" title="Numéro doit commencer par 77, 70, 78 ou 76 suivi de 7 chiffres" placeholder="ex: 771234567" required>
-                <small class="form-help">Le numéro doit correspondre à un utilisateur existant</small>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="modern-btn btn-primary">
-                    <span>➕</span>
-                    Ajouter Contact
-                </button>
-                <button type="button" onclick="cacherFormulaireAjoutContact()" class="modern-btn btn-secondary">
-                    <span>❌</span>
-                    Annuler
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
 
-<!-- Formulaire d'édition caché -->
-<div id="formulaireEditionContact" style="display: none;">
-    <form action="../api.php" method="post" class="modern-form">
-        <input type="hidden" name="action" value="modifier_contact">
-        <input type="hidden" name="contact_id" id="idEditionContact">
-        <div class="form-group">
-            <label class="form-label">Nouveau nom du contact</label>
-            <input type="text" name="contact_name" id="nomEditionContact" class="form-input" required>
-        </div>
-        <div class="form-actions">
-            <button type="submit" class="modern-btn btn-primary">
-                <span>✏️</span> Modifier
-            </button>
-            <button type="button" onclick="cacherFormulaireEditionContact()" class="modern-btn btn-secondary">
-                <span>❌</span>
-                Annuler
-            </button>
-        </div>
-    </form>
-</div>
-
-<div class="search-bar">
-    <input type="text" id="rechercheContacts" placeholder="Rechercher un contact...">
-</div>
-
-<div class="modern-list">
-    <?php foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact) { ?>
-        <?php
-        $utilisateur_contact_result = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']");
-        $utilisateur_contact = !empty($utilisateur_contact_result) ? $utilisateur_contact_result[0] : null;
-        if ($utilisateur_contact) {
+    <!-- Liste des contacts -->
+    <div class="contacts-list">
+        <?php 
+        $hasContacts = false;
+        foreach ($contacts->xpath("//contact[user_id='$id_utilisateur']") as $contact) { 
+            $utilisateur_contact_result = $utilisateurs->xpath("//user[telephone='{$contact->contact_telephone}']");
+            $utilisateur_contact = !empty($utilisateur_contact_result) ? $utilisateur_contact_result[0] : null;
+            if ($utilisateur_contact) {
+                $hasContacts = true;
         ?>
-            <div class="list-item contact-item">
-                <div class="item-avatar">
+            <div class="contact-item">
+                <div class="contact-avatar">
                     <?php if ($utilisateur_contact->profile_photo && $utilisateur_contact->profile_photo != 'default.jpg') { ?>
                         <img src="../uploads/<?php echo htmlspecialchars($utilisateur_contact->profile_photo); ?>" alt="Photo">
                     <?php } else { ?>
@@ -77,29 +34,56 @@
                     <?php } ?>
                 </div>
                 
-                <div class="item-content">
-                    <div class="item-name"><?php echo htmlspecialchars($contact->contact_name); ?></div>
-                    <div class="item-meta"><?php echo htmlspecialchars($contact->contact_telephone); ?></div>
+                <div class="contact-info">
+                    <div class="contact-name"><?php echo htmlspecialchars($contact->contact_name); ?></div>
+                    <div class="contact-meta"><?php echo htmlspecialchars($contact->contact_telephone); ?></div>
                 </div>
                 
-                <div class="item-actions">
-                    <button type="button" onclick="afficherFormulaireEditionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-secondary btn-small">
-                        ✏️
+                <div class="contact-actions">
+                    <button type="button" onclick="afficherModalEditionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="contact-action-btn edit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
                     </button>
-                    <button type="button" onclick="confirmerSuppressionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="modern-btn btn-danger btn-small">
-                        🗑️
+                    <button type="button" onclick="confirmerSuppressionContact('<?php echo $contact->contact_id; ?>', '<?php echo htmlspecialchars($contact->contact_name); ?>')" class="contact-action-btn delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3,6 5,6 21,6"></polyline>
+                            <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
         <?php } ?>
-    <?php } ?>
-    
-    <?php if (empty($contacts->xpath("//contact[user_id='$id_utilisateur']"))) { ?>
-        <div class="empty-state">
-            <div class="empty-icon">👥</div>
-            <h3>Aucun contact</h3>
-            <p>Ajoutez votre premier contact pour commencer à discuter.</p>
+        <?php } ?>
+        
+        <?php if (!$hasContacts) { ?>
+        <div class="empty-contacts">
+            <svg class="empty-contacts-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <h3 class="empty-contacts-title">Aucun contact pour le moment</h3>
+            <p class="empty-contacts-message">
+                Ajoutez votre premier contact pour commencer à discuter.
+            </p>
+            <button type="button" onclick="afficherModalAjoutContact()" class="add-contact-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    <circle cx="20" cy="4" r="2" fill="currentColor"></circle>
+                    <line x1="20" y1="3" x2="20" y2="5"></line>
+                    <line x1="19" y1="4" x2="21" y2="4"></line>
+                </svg>
+                Ajouter un contact
+            </button>
         </div>
-    <?php } ?>
+        <?php } ?>
+    </div>
 </div>
-<script src="/assets/js/global.js"></script>
+
+<script src="../assets/js/global.js"></script>

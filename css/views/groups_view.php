@@ -2,15 +2,7 @@
     <!-- Bouton Ajouter un groupe -->
     <div class="add-group-section">
         <button type="button" onclick="afficherModalCreationGroupe()" class="add-group-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                <circle cx="20" cy="4" r="2" fill="currentColor"></circle>
-                <line x1="20" y1="3" x2="20" y2="5"></line>
-                <line x1="19" y1="4" x2="21" y2="4"></line>
-            </svg>
+            <span>➕</span>
             Ajouter un groupe
         </button>
     </div>
@@ -66,18 +58,18 @@
             </div>
             <div class="group-actions">
                 <select class="group-action-select" onchange="gererActionGroupeSelect(this, '<?php echo $groupe->id; ?>')">
-                    <option value="">Actions</option>
-                    <option value="ouvrir_conversation">Ouvrir la conversation</option>
-                    <option value="lister_membres">Lister les membres</option>
+                    <option value="">⚙️ Actions</option>
+                    <option value="ouvrir_conversation">💬 Ouvrir la conversation</option>
+                    <option value="lister_membres">👥 Lister les membres</option>
                     <?php if ($peut_gerer) { ?>
-                        <option value="gerer_coadmins">Gérer les co-admins</option>
-                        <option value="retirer_membre">Retirer un membre</option>
-                        <option value="ajouter_membre">Ajouter un membre</option>
+                        <option value="gerer_coadmins">👑 Gérer les co-admins</option>
+                        <option value="retirer_membre">➖ Retirer un membre</option>
+                        <option value="ajouter_membre">➕ Ajouter un membre</option>
                     <?php } ?>
                     <?php if ($est_admin) { ?>
-                        <option value="supprimer_groupe">Supprimer le groupe</option>
+                        <option value="supprimer_groupe">🗑️ Supprimer le groupe</option>
                     <?php } else { ?>
-                        <option value="quitter_groupe">Quitter le groupe</option>
+                        <option value="quitter_groupe">🚪 Quitter le groupe</option>
                     <?php } ?>
                 </select>
             </div>
@@ -86,12 +78,7 @@
         
         <?php if (!$hasGroups) { ?>
         <div class="empty-groups">
-            <svg class="empty-groups-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
+            <div class="empty-groups-icon">👥</div>
             <h3 class="empty-groups-title">Aucun groupe pour le moment</h3>
             <p class="empty-groups-message">
                 Créez votre premier groupe pour commencer à discuter en équipe.
