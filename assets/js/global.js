@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
         form.method = "POST"
         form.action = "../api.php"
         form.innerHTML = `
-                <input type="hidden" name="action" value="delete_contact">
+                <input type="hidden" name="action" value="supprimer_contact">
                 <input type="hidden" name="contact_id" value="${idContact}">
             `
         document.body.appendChild(form)

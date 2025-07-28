@@ -63,7 +63,7 @@ switch($action){
                 $contact_id = htmlspecialchars($_POST['contact_id']);
                 
                 // Vérifier que le contact existe
-                $contact = $contacts->xpath("//contact[id='$contact_id']")[0];
+                $contact = $contacts->xpath("//contact[contact_id   ='$contact_id']")[0];
                 
                 if ($contact) {
                     // Vérifier que l'utilisateur connecté est le propriétaire du contact

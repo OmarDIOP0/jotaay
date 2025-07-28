@@ -28,7 +28,7 @@
                     break;
                 }
             }
-            $est_admin = trim((string)$groupe->id_admin) === trim((string)$id_utilisateur);
+            $est_admin = trim((string)$groupe->admin_id) === trim((string)$id_utilisateur);
             if (!$est_membre && !$est_admin) continue;
             
             $hasGroups = true;
@@ -39,9 +39,9 @@
             foreach ($groupe->membre_id as $id_membre) {
                 $ids_membres[] = trim((string)$id_membre);
             }
-            $id_admin = trim((string)$groupe->id_admin);
+            $admin_id = trim((string)$groupe->admin_id);
             $tous_les_ids = $ids_membres;
-            $tous_les_ids[] = $id_admin;
+            $tous_les_ids[] = $admin_id;
             $ids_uniques = array_unique($tous_les_ids);
             $nombre_membres = count($ids_uniques);
         ?>
@@ -50,12 +50,12 @@
                 <?php if ($groupe->group_photo && $groupe->group_photo != 'default.jpg') { ?>
                     <img src="../uploads/<?php echo htmlspecialchars($groupe->group_photo); ?>" alt="Photo Groupe">
                 <?php } else { ?>
-                    <?php echo strtoupper(substr($groupe->name, 0, 1)); ?>
+                    <?php echo strtoupper(substr($groupe->group_name, 0, 1)); ?>
                 <?php } ?>
             </div>
             <div class="group-info">
                 <div class="group-name">
-                    <?php echo htmlspecialchars($groupe->name); ?>
+                    <?php echo htmlspecialchars($groupe->group_name); ?>
                     <?php if ($est_admin) { ?>
                         <span class="group-badge admin">Admin</span>
                     <?php } elseif ($est_coadmin) { ?>

@@ -414,7 +414,7 @@
 
     <!-- Formulaire caché pour la suppression de contact -->
     <form id="deleteContactForm" action="../api.php" method="post" style="display: none;">
-        <input type="hidden" name="action" value="delete_contact">
+        <input type="hidden" name="action" value="supprimer_contact">
         <input type="hidden" name="contact_id" id="contactIdToDelete">
     </form>
 

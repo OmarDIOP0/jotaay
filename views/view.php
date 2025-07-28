@@ -289,8 +289,8 @@
                                 
                                 $conversations[] = [
                                     'type' => 'groupe',
-                                    'id' => $groupe->id,
-                                    'nom' => $groupe->name,
+                                    'id' => $groupe->group_id,
+                                    'nom' => $groupe->group_name,
                                     'photo' => $groupe->group_photo ?? '',
                                     'dernier_message' => $dernier_message,
                                     'timestamp' => $dernier_message ? (string)$dernier_message->timestamp : '0'
@@ -323,7 +323,7 @@
                                 <div class="contact-meta">
                                     <?php if ($conv['dernier_message']) { ?>
                                         <?php 
-                                        $expediteur = $utilisateurs->xpath("//user[id='{$conv['dernier_message']->sender_id}']");
+                                        $expediteur = $utilisateurs->xpath("//user[user_id='{$conv['dernier_message']->sender_id}']");
                                         $expediteur = !empty($expediteur) ? $expediteur[0] : null;
                                         $envoye_par_moi = $conv['dernier_message']->sender_id == $id_utilisateur;
                                         ?>
@@ -378,11 +378,14 @@
             $conversation_avatar = '';
             
             if ($current_conversation) {
+               
                 list($type, $id) = explode(':', $current_conversation);
+                 
                 if ($type === 'contact') {
                     // Récupérer les informations du contact par son ID
                     $contact_info_result = $contacts->xpath("//contact[contact_id='$id']");
                     $contact_info = !empty($contact_info_result) ? $contact_info_result[0] : null;
+                   
                     
                     if ($contact_info) {
                         // Récupérer l'ID de l'utilisateur contact par son numéro de téléphone
@@ -393,7 +396,7 @@
                         if ($contact_user_id) {
                             // Récupérer les messages entre les deux utilisateurs
                             $messages_to_show = $messages->xpath("//message[(sender_id='$id_utilisateur' and recipient='{$contact_info->contact_telephone}') or (sender_id='$contact_user_id' and recipient='$utilisateur_courant->telephone')]");
-                            
+                            // var_dump($messages_to_show);
                             // Trier les messages par timestamp
                             usort($messages_to_show, function($a, $b) {
                                 return strtotime((string)$a->timestamp) - strtotime((string)$b->timestamp);
@@ -420,7 +423,7 @@
                     }
                 } elseif ($type === 'groupe') {
                     // Récupérer les informations du groupe
-                    $groupe_info_result = $groupes->xpath("//group[id='$id']");
+                    $groupe_info_result = $groupes->xpath("//group[group_id='$id']");
                     $groupe_info = !empty($groupe_info_result) ? $groupe_info_result[0] : null;
                     
                     if ($groupe_info) {

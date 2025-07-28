@@ -52,11 +52,11 @@ foreach ($contacts_utilisateur as $contact) {
 $groupes_utilisateur = [];
 foreach ($groupes->group as $groupe) {
     // Vérifie si l'utilisateur est admin, coadmin ou membre
-    $est_admin = ((string)$groupe->id_admin === $id_utilisateur);
+    $est_admin = ((string)$groupe->admin_id === $id_utilisateur);
     $est_coadmin = false;
-    if (isset($groupe->id_coadmin)) {
-        foreach ($groupe->id_coadmin as $id_coadmin) {
-            if ((string)$id_coadmin === $id_utilisateur) {
+    if (isset($groupe->coadmins)) {
+        foreach ($groupe->coadmins as $coadmins) {
+            if ((string)$coadmins === $id_utilisateur) {
                 $est_coadmin = true;
                 break;
             }
@@ -74,7 +74,7 @@ foreach ($groupes->group as $groupe) {
     }
 }
 foreach ($groupes_utilisateur as $groupe) {
-    $messages_groupe = $messages->xpath("//message[recipient_group='{$groupe->id}']");
+    $messages_groupe = $messages->xpath("//message[recipient_group='{$groupe->group_id}']");
     if (!empty($messages_groupe)) {
         // Trier les messages par timestamp (plus récent en dernier)
         usort($messages_groupe, function($a, $b) {
@@ -123,7 +123,7 @@ foreach ($discussions as $discussion) {
 ?>
     <div class="list-item discussion-item">
         <div class="item-avatar">
-            <?php if ($utilisateur_contact->profile_photo && (string)$utilisateur_contact->profile_photo != 'default.jpg') { ?>
+            <?php if ($utilisateur_contact->profile_photo && (string)$utilisateur_contact->profile_photo != 'JOTAAY.png') { ?>
                 <img src="../uploads/<?php echo htmlspecialchars($utilisateur_contact->profile_photo); ?>" alt="Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             <?php } else { ?>
                 <?php echo strtoupper(substr($contact->contact_name, 0, 1)); ?>
@@ -139,7 +139,7 @@ foreach ($discussions as $discussion) {
             <div class="item-meta">
                 <?php if ($derniers_messages) { ?>
                     <?php 
-                    $expediteur = $utilisateurs->xpath("//user[id='{$derniers_messages->sender_id}']")[0];
+                    $expediteur = $utilisateurs->xpath("//user[user_id='{$derniers_messages->sender_id}']")[0];
                     $envoye_par_moi = $derniers_messages->sender_id == $id_utilisateur;
                     ?>
                     <span class="message-preview">
@@ -172,12 +172,12 @@ foreach ($discussions as $discussion) {
             <?php if ($groupe->group_photo && $groupe->group_photo != 'default.jpg') { ?>
                 <img src="../uploads/<?php echo htmlspecialchars($groupe->group_photo); ?>" alt="Photo Groupe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             <?php } else { ?>
-                <?php echo strtoupper(substr($groupe->name, 0, 1)); ?>
+                <?php echo strtoupper(substr($groupe->group_name, 0, 1)); ?>
             <?php } ?>
         </div>
         <div class="item-content">
             <div class="item-name">
-                <?php echo htmlspecialchars($groupe->name); ?>
+                <?php echo htmlspecialchars($groupe->group_name); ?>
                 <span style="background: var(--info-gradient); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">Groupe</span>
                 <?php if ($nb_non_lus > 0) { ?>
                     <span class="unread-badge"><?php echo $nb_non_lus; ?></span>
@@ -186,7 +186,7 @@ foreach ($discussions as $discussion) {
             <div class="item-meta">
                 <?php if ($derniers_messages) { ?>
                     <?php 
-                    $expediteur = $utilisateurs->xpath("//user[id='{$derniers_messages->sender_id}']")[0];
+                    $expediteur = $utilisateurs->xpath("//user[user_id='{$derniers_messages->sender_id}']")[0];
                     $envoye_par_moi = $derniers_messages->sender_id == $id_utilisateur;
                     ?>
                     <span class="message-preview">
@@ -203,7 +203,7 @@ foreach ($discussions as $discussion) {
             </div>
         </div>
         <div class="item-actions">
-            <a href="?conversation=groupe:<?php echo urlencode($groupe->id); ?>&tab=discussions" class="modern-btn btn-primary btn-small">
+            <a href="?conversation=groupe:<?php echo urlencode($groupe->group_id); ?>&tab=discussions" class="modern-btn btn-primary btn-small">
                 💬 Ouvrir
             </a>
         </div>
