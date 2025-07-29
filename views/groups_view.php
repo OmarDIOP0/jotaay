@@ -70,9 +70,9 @@
                     <option value="ouvrir_conversation">Ouvrir la conversation</option>
                     <option value="lister_membres">Lister les membres</option>
                     <?php if ($peut_gerer) { ?>
-                        <option value="gerer_coadmins">Gérer les co-admins</option>
+                        <!-- <option value="gerer_coadmins">Gérer les co-admins</option> -->
                         <!-- <option value="retirer_membre">Retirer un membre</option> -->
-                        <option value="ajouter_membre">Gerer membre</option>
+                        <option value="ajouter_membre">Gerer les membres</option>
                     <?php } ?>
                     <?php if ($est_admin) { ?>
                         <option value="supprimer_groupe">Supprimer le groupe</option>

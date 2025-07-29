@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $utilisateurs->asXML('../xmls/users.xml');
-            $_SESSION['user'] = (string) $utilisateur->user_id;
-            header('Location: ../views/view.php');
+            // $_SESSION['user'] = (string) $utilisateur->user_id;
+            header('Location: ../auth/login.php');
             exit;
         }
     }

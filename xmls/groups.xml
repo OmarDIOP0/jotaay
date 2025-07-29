@@ -1,40 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <groups xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../schema/groups.xsd">
-    <group>
-        <group_id>g001</group_id>
-        <group_name>Développeurs</group_name>
-        <group_description>Dev</group_description>
-        <admin_id>u001</admin_id>
-        <coadmins>u002</coadmins>
-        <group_photo>devs.png</group_photo>
-        <membre_id>u001</membre_id>
-        <membre_id>u002</membre_id>
-        <membre_id>u003</membre_id>
-    </group>
-<group>
-    <group_id>6884141d2578f</group_id>
-    <group_name>GRP2</group_name>
-    <group_description>grp2</group_description>
-    <admin_id>687ff5a5962bd</admin_id>
-    <membre_id>771234567</membre_id>
-    <membre_id>780987654</membre_id>
-</group>
-<group>
-    <group_id>68861dc26bf59</group_id>
-    <group_name>Groupe1</group_name>
-    <group_description/>
-    <admin_id>687ff5a5962bd</admin_id>
-    <group_photo>68861dc26bfb2_Pharmacy Logo with Hygieia Symbol.png</group_photo>
-    <membre_id/><membre_id/>
-</group>
-<group><group_id>68861fea423b0</group_id><group_name>GR1</group_name><group_description/><admin_id>687ff5a5962bd</admin_id><membre_id/><membre_id/></group><group><group_id>6886212233b76</group_id><group_name>GRP2</group_name><group_description/><admin_id>u002</admin_id><group_photo>6886212233b92_Pharmacy Logo with Hygieia Symbol.png</group_photo><membre_id>u002</membre_id></group><group><group_id>688621a48f6cc</group_id><group_name>Test</group_name><group_description/><admin_id>687ff5a5962bd</admin_id><membre_id>687ff5a5962bd</membre_id><membre_id>u002</membre_id></group><group><group_id>6887e9004650a</group_id><group_name>Pharma+</group_name><group_description/><admin_id>687ff5a5962bd</admin_id><group_photo>6887e90046516_Pharmacy Logo with Hygieia Symbol.png</group_photo><membre_id/><membre_id/></group>
 
-    <group>
-        <group_id>688817ddbe73d</group_id>
-        <group_name>Groupe_GLSI</group_name>
-        <group_description/>
-        <admin_id>688631b93d425</admin_id>
-        <group_photo>688817ddbe75e_Capture d'écran 2025-07-18 191152.png</group_photo>
-        
-        
-    <membre_id>6887f0f945eb3</membre_id></group><group><group_id>6888b71f7a477</group_id><group_name>Test_groupe</group_name><group_description/><admin_id>688631b93d425</admin_id><group_photo>6888b71f7a49c_visualelectric-1752792540771.png</group_photo><membre_id>687ff5a5962bd</membre_id><membre_id>6887f0f945eb3</membre_id><membre_id>u002</membre_id></group></groups>
+    <group><group_id>688908ae3cf75</group_id><group_name>GLSI</group_name><group_description/><admin_id>688631b93d425</admin_id><group_photo>688908ae3cfd6_admin.jpg</group_photo><membre_id>687ff5a5962bd</membre_id><membre_id>6887f0f945eb3</membre_id></group></groups>

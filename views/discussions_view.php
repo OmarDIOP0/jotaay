@@ -190,7 +190,7 @@ foreach ($discussions as $discussion) {
                     $envoye_par_moi = $derniers_messages->sender_id == $id_utilisateur;
                     ?>
                     <span class="message-preview">
-                        <?php echo $envoye_par_moi ? 'Vous: ' : ($expediteur ? htmlspecialchars($expediteur->prenom . ': ') : ''); ?>
+                        <?php echo $envoye_par_moi ? 'Vous: ' : ($expediteur ? htmlspecialchars($expediteur->username . ': ') : ''); ?>
                         <?php echo htmlspecialchars(substr($derniers_messages->content, 0, 50)); ?>
                         <?php if (strlen($derniers_messages->content) > 50) echo '...'; ?>
                     </span>

@@ -195,7 +195,7 @@
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                    <input type="text" class="search-input" placeholder="Rechercher ou commencer une nouvelle discussion">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Rechercher ou commencer une nouvelle discussion">
                 </div>
             </div>
 
@@ -286,8 +286,6 @@
                                     });
                                     $dernier_message = $messages_groupe[0];
                                 }
-                                var_dump($groupe);
-                                var_dump($groupe->group_id);
                                 $conversations[] = [
                                     'type' => 'groupe',
                                     'id' => $groupe->group_id,
