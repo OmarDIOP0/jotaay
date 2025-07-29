@@ -45,7 +45,7 @@ $_POST['utilisateur_courant'] = $utilisateur_courant;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
 
-    $contact_actions = ['ajouter_contact', 'supprimer_contact', 'modifier_contact'];
+    $contact_actions = ['ajouter_contact', 'supprimer_contact', 'modifier_contact', 'lister_contacts'];
     $group_actions   = ['creer_groupe', 'supprimer_groupe','ajouter_membre', 'supprimer_membre','ajouter_coadmin', 'retirer_coadmin', 'quitter_groupe', 'lister_membres', 'obtenir_membres_groupe'];
     $message_actions = ['envoyer_message', 'send_message'];
     $profil_actions = ['mettre_a_jour_profil'];
@@ -62,12 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         http_response_code(400);
         echo "<p style='color:red;'>Action non reconnue.</p>";
     }
-}elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
-    if (in_array($action, ['lister_membres', 'obtenir_membres_groupe'])) {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
+    $contact_actions = ['lister_contacts'];
+    $group_actions = ['lister_membres'];
+
+    if (in_array($action, $contact_actions)) {
+        $_POST['action'] = $action; // pour que services/contacts.php fonctionne
+        include 'services/contacts.php';
+    } elseif (in_array($action, $group_actions)) {
         include 'services/groupes.php';
     } else {
         http_response_code(400);
         echo "<p style='color:red;'>Action GET non reconnue.</p>";
     }
 }
+
 ?>

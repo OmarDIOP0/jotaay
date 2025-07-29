@@ -495,7 +495,7 @@ function afficherModalMembresGroupe(idGroupe) {
     modal.style.display = "flex"
     document.body.style.overflow = "hidden"
   
-    fetch(`../api.php?action=get_available_contacts&id_group=${idGroupe}`)
+    fetch(`../api.php?action=lister_contacts&id_group=${idGroupe}`)
       .then((response) => response.text())
       .then((data) => {
         contenu.innerHTML = data
