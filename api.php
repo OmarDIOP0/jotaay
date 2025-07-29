@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $message_actions = ['envoyer_message', 'send_message'];
     $profil_actions = ['mettre_a_jour_profil'];
 
-    if(in_array($action, $contact_actions)) {
+    if(in_array($action, $contact_actions)) {   
         include 'services/contacts.php';
     } elseif (in_array($action, $group_actions)) {
         include 'services/groupes.php';
