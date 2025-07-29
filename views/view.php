@@ -286,7 +286,8 @@
                                     });
                                     $dernier_message = $messages_groupe[0];
                                 }
-                                
+                                var_dump($groupe);
+                                var_dump($groupe->group_id);
                                 $conversations[] = [
                                     'type' => 'groupe',
                                     'id' => $groupe->group_id,
@@ -441,11 +442,9 @@
                 }
             }
             
-            if ($current_conversation && !empty($messages_to_show)) {
-                // Afficher la conversation
+            if ($current_conversation) {
                 ?>
                 <div class="chat-container">
-                    <!-- En-tête de la conversation -->
                     <div class="chat-header">
                         <div class="chat-avatar">
                             <?php if ($conversation_avatar && $conversation_avatar != 'default.jpg') { ?>
