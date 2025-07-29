@@ -485,6 +485,7 @@ function afficherModalMembresGroupe(idGroupe) {
   }
   
   function afficherModalAjouterMembre(idGroupe) {
+    console.log("ID groupe reçu:", idGroupe);
     const modal = document.getElementById("groupAddMemberModal")
     const titre = document.getElementById("groupAddMemberTitle")
     const contenu = document.getElementById("groupAddMemberContent")
@@ -495,7 +496,7 @@ function afficherModalMembresGroupe(idGroupe) {
     modal.style.display = "flex"
     document.body.style.overflow = "hidden"
   
-    fetch(`../api.php?action=lister_contacts&id_group=${idGroupe}`)
+    fetch(`../api.php?action=lister_contacts&group_id=${idGroupe}`)
       .then((response) => response.text())
       .then((data) => {
         contenu.innerHTML = data

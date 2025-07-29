@@ -799,7 +799,8 @@
                 <button type="button" onclick="fermerModalAjouterMembre()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
-                <div id="groupAddMemberContent"></div>
+                <div id="groupAddMemberContent">
+                </div>
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalAjouterMembre()" class="modern-btn btn-secondary">
                         <span>❌</span> Annuler

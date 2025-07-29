@@ -56,53 +56,6 @@ switch($action){
                 header('Location: views/view.php?error=missing_contact_data');
             }
             exit;
-    case 'lister_contacts':
-        // Trouver tous les contacts de l'utilisateur connecté
-        $contacts_utilisateur = $contacts->xpath("//contact[user_id='$id_utilisateur']");
-
-        echo "<div style='padding: 10px;'>";
-        echo "<h4>Mes contacts</h4>";
-        echo "<div style='max-height: 250px; overflow-y: auto;'>";
-
-        if (empty($contacts_utilisateur)) {
-            echo "<p>Aucun contact trouvé.</p>";
-        } else {
-            foreach ($contacts_utilisateur as $contact) {
-                $contact_name = htmlspecialchars((string)$contact->contact_name);
-                $contact_telephone = htmlspecialchars((string)$contact->contact_telephone);
-                $contact_id = htmlspecialchars((string)$contact->contact_id);
-
-                $utilisateur_contact = $utilisateurs->xpath("//user[telephone='$contact_telephone']")[0];
-                $user_exists = $utilisateur_contact ? true : false;
-                $profile_photo = $user_exists ? ((string)$utilisateur_contact->profile_photo ?: "../assets/img/default.png") : "../assets/img/default.png";
-                $profile_photo = htmlspecialchars($profile_photo);
-                $username = $user_exists ? htmlspecialchars((string)$utilisateur_contact->username) : "Inconnu";
-
-                echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
-                echo "<div style='display: flex; align-items: center; gap: 10px;'>";
-                echo "<img src='" . $profile_photo . "' alt='photo' width='40' height='40' style='border-radius: 50%; object-fit: cover;'>";
-                echo "<div>";
-                echo "<strong>$contact_name</strong><br>";
-                echo "<small>$contact_telephone</small>";
-                echo "</div>";
-                echo "</div>";
-
-                echo "<div>";
-                echo $user_exists 
-                    ? "<span style='background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Utilisateur</span>"
-                    : "<span style='background: #dc3545; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Non inscrit</span>";
-                echo "</div>";
-
-                echo "</div>";
-            }
-        }
-
-        echo "</div>";
-        echo "</div>";
-        exit;
-
-
-
     case 'supprimer_contact':
             // Supprimer un contact
             if (isset($_POST['contact_id'])) {
@@ -136,7 +89,8 @@ switch($action){
                 header('Location: views/view.php?error=missing_contact_id');
             }
             exit;
-     case 'modifier_contact':
+    case 'modifier_contact':
+        
             if (isset($_POST['contact_id'], $_POST['contact_name'])) {
                 $contact_id = htmlspecialchars($_POST['contact_id']);
                 $nouveau_nom = htmlspecialchars($_POST['contact_name']);
@@ -162,7 +116,92 @@ switch($action){
                 header('Location: views/view.php?error=missing_contact_data');
             }
             exit;
+    case 'lister_contacts':
+        $group_id = $_GET['group_id'] ?? null;
+        $groupe = null;
 
-}
+        // Charger le groupe s'il est précisé
+        if ($group_id) {
+            $groupe = $groupes->xpath("//group[group_id='$group_id']")[0] ?? null;
+        }
+
+
+        // Lister les contacts de l'utilisateur
+        $contacts_utilisateur = $contacts->xpath("//contact[user_id='$id_utilisateur']");
+
+        echo "<div style='padding: 10px;'>";
+        echo "<h4>Mes contacts</h4>";
+        echo "<div style='max-height: 250px; overflow-y: auto;'>";
+
+        if (empty($contacts_utilisateur)) {
+            echo "<p>Aucun contact trouvé.</p>";
+        } else {
+            foreach ($contacts_utilisateur as $contact) {
+                $contact_telephone = (string)$contact->contact_telephone;
+                $contact_name = htmlspecialchars((string)$contact->contact_name);
+                $contact_id = (string)$contact->contact_id;
+
+                $utilisateur_contact = $utilisateurs->xpath("//user[telephone='$contact_telephone']")[0] ?? null;
+                $user_exists = $utilisateur_contact !== null;
+                $user_id = $user_exists ? (string)$utilisateur_contact->user_id : null;
+
+                $profile_photo = $user_exists ? ((string)$utilisateur_contact->profile_photo ?: "../assets/img/JOTAAY.png") : "../assets/img/JOTAAY.png";
+                $profile_photo = htmlspecialchars($profile_photo);
+                $username = $user_exists ? htmlspecialchars((string)$utilisateur_contact->username) : "Inconnu";
+
+                echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
+                echo "<div style='display: flex; align-items: center; gap: 10px;'>";
+                echo "<img src='$profile_photo' alt='photo' width='40' height='40' style='border-radius: 50%; object-fit: cover;'>";
+                echo "<div>";
+                echo "<strong>$contact_name</strong><br>";
+                echo "<small>$contact_telephone</small>";
+                echo "</div>";
+                echo "</div>";
+
+                echo "<div>";
+
+                if ($user_exists) {
+                    // echo "<span style='background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Utilisateur</span><br>";
+
+                    // Si groupe chargé, vérifier si utilisateur_contact est déjà membre
+                    if ($groupe && $user_id) {
+                        $est_deja_membre = ((string)$groupe->admin_id === $user_id);
+                        if (!$est_deja_membre) {
+                            foreach ($groupe->membre_id as $membre_id) {
+                                if ((string)$membre_id === $user_id) {
+                                    $est_deja_membre = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!$est_deja_membre) {
+                            echo "<form method='POST' action='api.php' style='margin-top: 5px;'>";
+                            echo "<input type='hidden' name='action' value='ajouter_membre'>";
+                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                            echo "<input type='hidden' name='id_nouveau_membre' value='" . htmlspecialchars($user_id) . "'>";
+                            echo "<button type='submit' class='btn btn-sm btn-primary'>Ajouter</button>";
+                            echo "</form>";
+
+                        } else {
+                            echo "<span style='background: #17a2b8; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Déjà membre</span>";
+                        }
+                    }
+                } else {
+                    echo "<span style='background: #dc3545; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Non inscrit</span>";
+                }
+
+                echo "</div>";
+                echo "</div>";
+            }
+        }
+
+        echo "</div>";
+        echo "</div>";
+        exit;
+
+
+            }
+        
 
 ?>
