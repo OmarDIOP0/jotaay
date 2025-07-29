@@ -170,7 +170,7 @@ switch($action){
             $coadmins = htmlspecialchars($_POST['coadmins']);
             
             // Vérifier que le groupe existe
-            $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+            $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
             
             if ($groupe) {
                 // Vérifier que l'utilisateur connecté est admin

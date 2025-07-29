@@ -120,11 +120,9 @@ switch($action){
         $group_id = $_GET['group_id'] ?? null;
         $groupe = null;
 
-        // Charger le groupe s'il est précisé
         if ($group_id) {
             $groupe = $groupes->xpath("//group[group_id='$group_id']")[0] ?? null;
         }
-
 
         // Lister les contacts de l'utilisateur
         $contacts_utilisateur = $contacts->xpath("//contact[user_id='$id_utilisateur']");
@@ -176,7 +174,7 @@ switch($action){
                         }
 
                         if (!$est_deja_membre) {
-                            echo "<form method='POST' action='api.php' style='margin-top: 5px;'>";
+                            echo "<form method='POST' action='../api.php' style='margin-top: 5px;'>";
                             echo "<input type='hidden' name='action' value='ajouter_membre'>";
                             echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
                             echo "<input type='hidden' name='id_nouveau_membre' value='" . htmlspecialchars($user_id) . "'>";
@@ -185,6 +183,12 @@ switch($action){
 
                         } else {
                             echo "<span style='background: #17a2b8; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Déjà membre</span>";
+                            echo "<form method='POST' action='../api.php' style='margin-top: 5px;'>";
+                            echo "<input type='hidden' name='action' value='retirer_membre'>";
+                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                            echo "<input type='hidden' name='membre_id' value='" . htmlspecialchars($membre_id) . "'>";
+                            echo "<button type='submit' class='btn btn-sm btn-danger'>Retirer</button>";
+                            echo "</form>";
                         }
                     }
                 } else {
