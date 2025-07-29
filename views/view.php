@@ -250,7 +250,7 @@
                                 $dernier_message = null;
                                 if (!empty($messages_conversation)) {
                                     usort($messages_conversation, function($a, $b) {
-                                        return strtotime((string)$b->timestamp) - strtotime((string)$a->timestamp);
+                                        return strtotime((string)$b->attributes()->timestamp) - strtotime((string)$a->attributes()->timestamp);
                                     });
                                     $dernier_message = $messages_conversation[0];
                                 }
@@ -261,7 +261,7 @@
                                     'nom' => $contact->contact_name,
                                     'photo' => $utilisateur_contact->profile_photo,
                                     'dernier_message' => $dernier_message,
-                                    'timestamp' => $dernier_message ? (string)$dernier_message->timestamp : '0'
+                                    'timestamp' => $dernier_message ? (string)$dernier_message->attributes()->timestamp : '0'
                                 ];
                             }
                         }
@@ -282,7 +282,7 @@
                                 $dernier_message = null;
                                 if (!empty($messages_groupe)) {
                                     usort($messages_groupe, function($a, $b) {
-                                        return strtotime((string)$b->timestamp) - strtotime((string)$a->timestamp);
+                                        return strtotime((string)$b->attributes()->timestamp) - strtotime((string)$a->attributes()->timestamp);
                                     });
                                     $dernier_message = $messages_groupe[0];
                                 }
@@ -294,12 +294,10 @@
                                     'nom' => $groupe->group_name,
                                     'photo' => $groupe->group_photo ?? '',
                                     'dernier_message' => $dernier_message,
-                                    'timestamp' => $dernier_message ? (string)$dernier_message->timestamp : '0'
+                                    'timestamp' => $dernier_message ? (string)$dernier_message->attributes()->timestamp : '0'
                                 ];
                             }
                         }
-                        
-                        // Trier par timestamp décroissant
                         usort($conversations, function($a, $b) {
                             return strtotime($b['timestamp']) - strtotime($a['timestamp']);
                         });
@@ -397,10 +395,8 @@
                         if ($contact_user_id) {
                             // Récupérer les messages entre les deux utilisateurs
                             $messages_to_show = $messages->xpath("//message[(sender_id='$id_utilisateur' and recipient='{$contact_info->contact_telephone}') or (sender_id='$contact_user_id' and recipient='$utilisateur_courant->telephone')]");
-                            // var_dump($messages_to_show);
-                            // Trier les messages par timestamp
                             usort($messages_to_show, function($a, $b) {
-                                return strtotime((string)$a->timestamp) - strtotime((string)$b->timestamp);
+                                return strtotime((string)$a->attributes()->timestamp) - strtotime((string)$b->attributes()->timestamp);
                             });
                             
                             // Marquer comme lus tous les messages reçus non lus
@@ -431,9 +427,8 @@
                         // Récupérer les messages du groupe
                         $messages_to_show = $messages->xpath("//message[recipient_group='$id']");
                         
-                        // Trier les messages par timestamp
                         usort($messages_to_show, function($a, $b) {
-                            return strtotime((string)$a->timestamp) - strtotime((string)$b->timestamp);
+                            return strtotime((string)$a->attributes()->timestamp) - strtotime((string)$b->attributes()->timestamp);
                         });
                         
                         $conversation_name = $groupe_info->name;
@@ -492,7 +487,7 @@
                                     <?php } ?>
                                     
                                     <div class="message-meta">
-                                        <span class="message-time"><?php echo date('H:i', strtotime((string)$message->timestamp ?? 'now')); ?></span>
+                                        <span class="message-time"><?php echo date('H:i', strtotime((string)$message->attributes()->timestamp ?? 'now')); ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -741,7 +736,10 @@
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalMembresGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Fermer
-                    </button><button onclick="afficherModalMembresGroupe('<?php echo $groupe->group_id; ?>')">Voir membres</button>
+                    </button>
+                    <button onclick="afficherModalMembresGroupe('<?php echo $groupe->group_id; ?>')" type="button" class="modern-btn btn-primary">
+                        Voir membres
+                    </button>
 
                 </div>
             </div>

@@ -331,7 +331,6 @@ switch($action){
                 if ($groupe) {
                     // Autoriser admin ou membre
                     $est_membre = ((string)$groupe->admin_id === $id_utilisateur);
-                    var_dump($groupe->membre_id);
                     if (!$est_membre) {
                         foreach ($groupe->membre_id as $membre_id_groupe) {
                             if ((string)$membre_id_groupe === $id_utilisateur) {

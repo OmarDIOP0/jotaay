@@ -23,8 +23,8 @@ foreach ($contacts_utilisateur as $contact) {
         if (!empty($messages_conversation)) {
             // Trier les messages par timestamp (plus récent en dernier)
             usort($messages_conversation, function($a, $b) {
-                $timestamp_a = (string)$a->timestamp;
-                $timestamp_b = (string)$b->timestamp;
+                $timestamp_a = (string)$a->attributes()->timestamp;
+                $timestamp_b = (string)$b->attributes()->timestamp;
                 return strtotime($timestamp_a) - strtotime($timestamp_b);
             });
             $derniers_messages = end($messages_conversation);
@@ -78,8 +78,8 @@ foreach ($groupes_utilisateur as $groupe) {
     if (!empty($messages_groupe)) {
         // Trier les messages par timestamp (plus récent en dernier)
         usort($messages_groupe, function($a, $b) {
-            $timestamp_a = (string)$a->timestamp;
-            $timestamp_b = (string)$b->timestamp;
+            $timestamp_a = (string)$a->attributes()->timestamp;
+            $timestamp_b = (string)$b->attributes()->timestamp;
             return strtotime($timestamp_a) - strtotime($timestamp_b);
         });
         $derniers_messages = end($messages_groupe);
@@ -103,8 +103,8 @@ foreach ($groupes_utilisateur as $groupe) {
 // Trier les discussions par date du dernier message (plus récent en premier)
 usort($discussions, function($a, $b) {
     if ($a['derniers_messages'] && $b['derniers_messages']) {
-        $timestamp_a = (string)$a['derniers_messages']->timestamp;
-        $timestamp_b = (string)$b['derniers_messages']->timestamp;
+        $timestamp_a = (string)$a['derniers_messages']->attributes()->timestamp;
+        $timestamp_b = (string)$b['derniers_messages']->attributes()->timestamp;
         return strtotime($timestamp_b) - strtotime($timestamp_a);
     } elseif ($a['derniers_messages']) {
         return -1;
@@ -148,7 +148,7 @@ foreach ($discussions as $discussion) {
                         <?php if (strlen($derniers_messages->content) > 50) echo '...'; ?>
                     </span>
                     <span class="message-time">
-                        <?php echo date('d/m H:i', strtotime((string)$derniers_messages->timestamp ?? 'now')); ?>
+                        <?php echo date('d/m H:i', strtotime((string)$derniers_messages->attributes()->timestamp ?? 'now')); ?>
                     </span>
                 <?php } else { ?>
                     <span class="no-messages">Aucun message</span>
