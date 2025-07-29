@@ -5,7 +5,23 @@ $utilisateurs = $_POST['utilisateurs'];
 $contacts = $_POST['contacts'];
 $id_utilisateur = $_POST['id_utilisateur'];
 $utilisateur_courant = $_POST['utilisateur_courant'];
-$action = $_POST['action'];
+$method = $_SERVER['REQUEST_METHOD'];
+
+if ($method === 'GET') {
+    $utilisateurs = simplexml_load_file('xmls/users.xml');
+    $contacts = simplexml_load_file('xmls/contacts.xml');
+    $groupes = simplexml_load_file('xmls/groups.xml');
+    $id_utilisateur = $_SESSION['user'];
+    $action = $_GET['action'];
+} else {
+    $utilisateurs = $_POST['utilisateurs'];
+    $contacts = $_POST['contacts'];
+    $groupes = $_POST['groupes'];
+    $id_utilisateur = $_POST['id_utilisateur'];
+    $utilisateur_courant = $_POST['utilisateur_courant'];
+    $action = $_POST['action'];
+}
+
 
 switch($action){
     case 'creer_groupe':
@@ -73,271 +89,273 @@ switch($action){
             }
             exit;
     
-        case 'retirer_membre':
-            if (isset($_POST['group_id'], $_POST['membre_id'])) {
-                $group_id = htmlspecialchars($_POST['group_id']);
-                $membre_id = htmlspecialchars($_POST['membre_id']);
+    case 'retirer_membre':
+        if (isset($_POST['group_id'], $_POST['membre_id'])) {
+            $group_id = htmlspecialchars($_POST['group_id']);
+            $membre_id = htmlspecialchars($_POST['membre_id']);
+            
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+            
+            if ($groupe) {
+                // Vérifier que l'utilisateur connecté est admin ou coadmin
+                $est_admin = (string)$groupe->admin_id === $id_utilisateur;
+                $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
+                $est_coadmin = in_array($id_utilisateur, $coadmins);
                 
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
-                
-                if ($groupe) {
-                    // Vérifier que l'utilisateur connecté est admin ou coadmin
-                    $est_admin = (string)$groupe->admin_id === $id_utilisateur;
-                    $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
-                    $est_coadmin = in_array($id_utilisateur, $coadmins);
-                    
-                    if ($est_admin || $est_coadmin) {
-                        // Vérifier que le membre existe dans le groupe
-                        $membre_existe = false;
-                        foreach ($groupe->membre_id as $membre_id_groupe) {
-                            if ((string)$membre_id_groupe === $membre_id) {
-                                $membre_existe = true;
-                                break;
-                            }
-                        }
-                        
-                        if ($membre_existe) {
-                            // Retirer le membre du groupe (version sûre)
-                            $new_membre_ids = [];
-                            foreach ($groupe->membre_id as $membre_id_groupe) {
-                                if ((string)$membre_id_groupe !== $membre_id) {
-                                    $new_membre_ids[] = (string)$membre_id_groupe;
-                                }
-                            }
-                            // Supprimer tous les <membre_id>
-                            unset($groupe->membre_id);
-                            // Réajouter les membres restants
-                            foreach ($new_membre_ids as $mid) {
-                                $groupe->addChild('membre_id', $mid);
-                            }
-                            // Si le membre retiré était admin, transférer l'admin à un autre membre
-                            if ((string)$groupe->admin_id === $membre_id) {
-                                if (!empty($new_membre_ids)) {
-                                    $groupe->admin_id = $new_membre_ids[0];
-                                    // Supprimer les coadmins si l'admin est retiré
-                                    unset($groupe->coadmins);
-                                }
-                            }
-                            // Retirer le membre des coadmins s'il l'était
-                            if (isset($groupe->coadmins)) {
-                                $coadmin_list = explode(',', (string)$groupe->coadmins);
-                                $coadmin_list = array_diff($coadmin_list, [$membre_id]);
-                                if (!empty($coadmin_list)) {
-                                    $groupe->coadmins = implode(',', $coadmin_list);
-                                } else {
-                                    unset($groupe->coadmins);
-                                }
-                            }
-                            // Sauvegarder le fichier
-                            $resultat = $groupes->asXML('xmls/groups.xml');
-                            if ($resultat) {
-                                header('Location: views/view.php?success=member_removed');
-                            } else {
-                                header('Location: views/view.php?error=member_remove_failed');
-                            }
-                        } else {
-                            header('Location: views/view.php?error=member_not_found');
-                        }
-                    } else {
-                        header('Location: views/view.php?error=unauthorized_group_action');
-                    }
-                } else {
-                    header('Location: views/view.php?error=group_not_found');
-                }
-            } else {
-                header('Location: views/view.php?error=missing_group_data');
-            }
-            exit;
-            case 'ajouter_coadmin':
-            if (isset($_POST['group_id'], $_POST['coadmins'])) {
-                $group_id = htmlspecialchars($_POST['group_id']);
-                $coadmins = htmlspecialchars($_POST['coadmins']);
-                
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
-                
-                if ($groupe) {
-                    // Vérifier que l'utilisateur connecté est admin
-                    if ((string)$groupe->admin_id === $id_utilisateur) {
-                        // Vérifier que le coadmin est membre du groupe
-                        $est_membre = false;
-                        foreach ($groupe->membre_id as $membre_id) {
-                            if ((string)$membre_id === $coadmins) {
-                                $est_membre = true;
-                                break;
-                            }
-                        }
-                        
-                        if ($est_membre) {
-                            // Ajouter le coadmin
-                            $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
-                            if (!in_array($coadmins, $coadmins)) {
-                                $coadmins[] = $coadmins;
-                                $groupe->coadmins = implode(',', $coadmins);
-                                
-                                // Sauvegarder le fichier
-                                $resultat = $groupes->asXML('xmls/groups.xml');
-                                
-                                if ($resultat) {
-                                    header('Location: views/view.php?success=coadmin_added');
-                                } else {
-                                    header('Location: views/view.php?error=coadmin_manage_failed');
-                                }
-                            } else {
-                                header('Location: views/view.php?error=coadmin_already_exists');
-                            }
-                        } else {
-                            header('Location: views/view.php?error=member_not_found');
-                        }
-                    } else {
-                        header('Location: views/view.php?error=unauthorized_group_action');
-                    }
-                } else {
-                    header('Location: views/view.php?error=group_not_found');
-                }
-            } else {
-                header('Location: views/view.php?error=missing_group_data');
-            }
-            exit;
-
-        case 'retirer_coadmin':
-            if (isset($_POST['group_id'], $_POST['coadmins'])) {
-                $group_id = htmlspecialchars($_POST['group_id']);
-                $coadmins = htmlspecialchars($_POST['coadmins']);
-                
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
-                
-                if ($groupe) {
-                    // Vérifier que l'utilisateur connecté est admin
-                    if ((string)$groupe->admin_id === $id_utilisateur) {
-                        // Retirer le coadmin
-                        if (isset($groupe->coadmins)) {
-                    $coadmins = explode(',', (string)$groupe->coadmins);
-                            $coadmins = array_diff($coadmins, [$coadmins]);
-                            if (!empty($coadmins)) {
-                        $groupe->coadmins = implode(',', $coadmins);
-                            } else {
-                                unset($groupe->coadmins);
-                            }
-                            
-                            // Sauvegarder le fichier
-                            $resultat = $groupes->asXML('xmls/groups.xml');
-                            
-                            if ($resultat) {
-                                header('Location: views/view.php?success=coadmin_removed');
-                            } else {
-                                header('Location: views/view.php?error=coadmin_manage_failed');
-                            }
-                        } else {
-                            header('Location: views/view.php?error=coadmin_not_found');
-                        }
-                    } else {
-                        header('Location: views/view.php?error=unauthorized_group_action');
-                    }
-                } else {
-                    header('Location: views/view.php?error=group_not_found');
-                }
-            } else {
-                header('Location: views/view.php?error=missing_group_data');
-            }
-            exit;
-
-        case 'quitter_groupe':
-            if (isset($_POST['group_id'])) {
-                $group_id = htmlspecialchars($_POST['group_id']);
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
-                if ($groupe) {
-                    // Vérifier que l'utilisateur est membre du groupe
-                    $est_membre = false;
+                if ($est_admin || $est_coadmin) {
+                    // Vérifier que le membre existe dans le groupe
+                    $membre_existe = false;
                     foreach ($groupe->membre_id as $membre_id_groupe) {
-                        if ((string)$membre_id_groupe === $id_utilisateur) {
-                            $est_membre = true;
+                        if ((string)$membre_id_groupe === $membre_id) {
+                            $membre_existe = true;
                             break;
                         }
                     }
-                    if ($est_membre) {
-                        // Retirer l'utilisateur du groupe (sans créer de <membre_id/> vide)
-                        $membre_ids = [];
+                    
+                    if ($membre_existe) {
+                        // Retirer le membre du groupe (version sûre)
+                        $new_membre_ids = [];
                         foreach ($groupe->membre_id as $membre_id_groupe) {
-                            if ((string)$membre_id_groupe !== $id_utilisateur && trim((string)$membre_id_groupe) !== '') {
-                                $membre_ids[] = (string)$membre_id_groupe;
+                            if ((string)$membre_id_groupe !== $membre_id) {
+                                $new_membre_ids[] = (string)$membre_id_groupe;
                             }
                         }
+                        // Supprimer tous les <membre_id>
                         unset($groupe->membre_id);
-                        foreach ($membre_ids as $membre_id_groupe) {
-                            $groupe->addChild('membre_id', $membre_id_groupe);
+                        // Réajouter les membres restants
+                        foreach ($new_membre_ids as $mid) {
+                            $groupe->addChild('membre_id', $mid);
                         }
-                        // Si l'utilisateur était admin, transférer l'admin à un autre membre
-                        if ((string)$groupe->admin_id === $id_utilisateur) {
-                            if (!empty($membre_ids)) {
-                                $groupe->admin_id = $membre_ids[0];
+                        // Si le membre retiré était admin, transférer l'admin à un autre membre
+                        if ((string)$groupe->admin_id === $membre_id) {
+                            if (!empty($new_membre_ids)) {
+                                $groupe->admin_id = $new_membre_ids[0];
+                                // Supprimer les coadmins si l'admin est retiré
                                 unset($groupe->coadmins);
-                            } else {
-                                // Si plus aucun membre, on peut supprimer le groupe ou laisser l'admin seul (ici on laisse le groupe)
                             }
                         }
-                        // Retirer l'utilisateur des coadmins s'il l'était
+                        // Retirer le membre des coadmins s'il l'était
                         if (isset($groupe->coadmins)) {
                             $coadmin_list = explode(',', (string)$groupe->coadmins);
-                            $coadmin_list = array_diff($coadmin_list, [$id_utilisateur]);
+                            $coadmin_list = array_diff($coadmin_list, [$membre_id]);
                             if (!empty($coadmin_list)) {
                                 $groupe->coadmins = implode(',', $coadmin_list);
                             } else {
                                 unset($groupe->coadmins);
                             }
                         }
+                        // Sauvegarder le fichier
                         $resultat = $groupes->asXML('xmls/groups.xml');
                         if ($resultat) {
-                            header('Location: views/view.php?success=group_left');
+                            header('Location: views/view.php?success=member_removed');
                         } else {
-                            header('Location: views/view.php?error=group_leave_failed');
+                            header('Location: views/view.php?error=member_remove_failed');
                         }
                     } else {
-                        header('Location: views/view.php?error=unauthorized_group_action');
+                        header('Location: views/view.php?error=member_not_found');
                     }
                 } else {
-                    header('Location: views/view.php?error=group_not_found');
+                    header('Location: views/view.php?error=unauthorized_group_action');
                 }
             } else {
-                header('Location: views/view.php?error=missing_group_id');
+                header('Location: views/view.php?error=group_not_found');
             }
-            exit;
-
-        case 'lister_membres':
-            if (isset($_GET['group_id'])) {
-                $group_id = htmlspecialchars($_GET['group_id']);
-                
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
-                
-                if ($groupe) {
-                    // Vérifier que l'utilisateur est membre du groupe
+        } else {
+            header('Location: views/view.php?error=missing_group_data');
+        }
+        exit;
+        case 'ajouter_coadmin':
+        if (isset($_POST['group_id'], $_POST['coadmins'])) {
+            $group_id = htmlspecialchars($_POST['group_id']);
+            $coadmins = htmlspecialchars($_POST['coadmins']);
+            
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+            
+            if ($groupe) {
+                // Vérifier que l'utilisateur connecté est admin
+                if ((string)$groupe->admin_id === $id_utilisateur) {
+                    // Vérifier que le coadmin est membre du groupe
                     $est_membre = false;
-                    foreach ($groupe->membre_id as $membre_id_groupe) {
-                        if ((string)$membre_id_groupe === $id_utilisateur) {
+                    foreach ($groupe->membre_id as $membre_id) {
+                        if ((string)$membre_id === $coadmins) {
                             $est_membre = true;
                             break;
                         }
                     }
                     
                     if ($est_membre) {
-                        echo "<div style='padding: 10px;'>";
-                        echo "<h4>Membres du groupe : " . htmlspecialchars($groupe->name) . "</h4>";
-                        echo "<div style='max-height: 250px; overflow-y: auto;'>";
+                        // Ajouter le coadmin
+                        $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
+                        if (!in_array($coadmins, $coadmins)) {
+                            $coadmins[] = $coadmins;
+                            $groupe->coadmins = implode(',', $coadmins);
+                            
+                            // Sauvegarder le fichier
+                            $resultat = $groupes->asXML('xmls/groups.xml');
+                            
+                            if ($resultat) {
+                                header('Location: views/view.php?success=coadmin_added');
+                            } else {
+                                header('Location: views/view.php?error=coadmin_manage_failed');
+                            }
+                        } else {
+                            header('Location: views/view.php?error=coadmin_already_exists');
+                        }
+                    } else {
+                        header('Location: views/view.php?error=member_not_found');
+                    }
+                } else {
+                    header('Location: views/view.php?error=unauthorized_group_action');
+                }
+            } else {
+                header('Location: views/view.php?error=group_not_found');
+            }
+        } else {
+            header('Location: views/view.php?error=missing_group_data');
+        }
+        exit;
+
+    case 'retirer_coadmin':
+        if (isset($_POST['group_id'], $_POST['coadmins'])) {
+            $group_id = htmlspecialchars($_POST['group_id']);
+            $coadmins = htmlspecialchars($_POST['coadmins']);
+            
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+            
+            if ($groupe) {
+                // Vérifier que l'utilisateur connecté est admin
+                if ((string)$groupe->admin_id === $id_utilisateur) {
+                    // Retirer le coadmin
+                    if (isset($groupe->coadmins)) {
+                $coadmins = explode(',', (string)$groupe->coadmins);
+                        $coadmins = array_diff($coadmins, [$coadmins]);
+                        if (!empty($coadmins)) {
+                    $groupe->coadmins = implode(',', $coadmins);
+                        } else {
+                            unset($groupe->coadmins);
+                        }
                         
+                        // Sauvegarder le fichier
+                        $resultat = $groupes->asXML('xmls/groups.xml');
+                        
+                        if ($resultat) {
+                            header('Location: views/view.php?success=coadmin_removed');
+                        } else {
+                            header('Location: views/view.php?error=coadmin_manage_failed');
+                        }
+                    } else {
+                        header('Location: views/view.php?error=coadmin_not_found');
+                    }
+                } else {
+                    header('Location: views/view.php?error=unauthorized_group_action');
+                }
+            } else {
+                header('Location: views/view.php?error=group_not_found');
+            }
+        } else {
+            header('Location: views/view.php?error=missing_group_data');
+        }
+        exit;
+
+    case 'quitter_groupe':
+        if (isset($_POST['group_id'])) {
+            $group_id = htmlspecialchars($_POST['group_id']);
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
+            if ($groupe) {
+                // Vérifier que l'utilisateur est membre du groupe
+                $est_membre = false;
+                foreach ($groupe->membre_id as $membre_id_groupe) {
+                    if ((string)$membre_id_groupe === $id_utilisateur) {
+                        $est_membre = true;
+                        break;
+                    }
+                }
+                if ($est_membre) {
+                    // Retirer l'utilisateur du groupe (sans créer de <membre_id/> vide)
+                    $membre_ids = [];
+                    foreach ($groupe->membre_id as $membre_id_groupe) {
+                        if ((string)$membre_id_groupe !== $id_utilisateur && trim((string)$membre_id_groupe) !== '') {
+                            $membre_ids[] = (string)$membre_id_groupe;
+                        }
+                    }
+                    unset($groupe->membre_id);
+                    foreach ($membre_ids as $membre_id_groupe) {
+                        $groupe->addChild('membre_id', $membre_id_groupe);
+                    }
+                    // Si l'utilisateur était admin, transférer l'admin à un autre membre
+                    if ((string)$groupe->admin_id === $id_utilisateur) {
+                        if (!empty($membre_ids)) {
+                            $groupe->admin_id = $membre_ids[0];
+                            unset($groupe->coadmins);
+                        } else {
+                            // Si plus aucun membre, on peut supprimer le groupe ou laisser l'admin seul (ici on laisse le groupe)
+                        }
+                    }
+                    // Retirer l'utilisateur des coadmins s'il l'était
+                    if (isset($groupe->coadmins)) {
+                        $coadmin_list = explode(',', (string)$groupe->coadmins);
+                        $coadmin_list = array_diff($coadmin_list, [$id_utilisateur]);
+                        if (!empty($coadmin_list)) {
+                            $groupe->coadmins = implode(',', $coadmin_list);
+                        } else {
+                            unset($groupe->coadmins);
+                        }
+                    }
+                    $resultat = $groupes->asXML('xmls/groups.xml');
+                    if ($resultat) {
+                        header('Location: views/view.php?success=group_left');
+                    } else {
+                        header('Location: views/view.php?error=group_leave_failed');
+                    }
+                } else {
+                    header('Location: views/view.php?error=unauthorized_group_action');
+                }
+            } else {
+                header('Location: views/view.php?error=group_not_found');
+            }
+        } else {
+            header('Location: views/view.php?error=missing_group_id');
+        }
+        exit;
+
+    case 'lister_membres':
+            if (isset($_GET['group_id'])) {
+                $group_id = htmlspecialchars($_GET['group_id']);
+
+                $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
+
+                if ($groupe) {
+                    // Autoriser admin ou membre
+                    $est_membre = ((string)$groupe->admin_id === $id_utilisateur);
+                    var_dump($groupe->membre_id);
+                    if (!$est_membre) {
                         foreach ($groupe->membre_id as $membre_id_groupe) {
-                            $membre = $utilisateurs->xpath("//user[id='$membre_id_groupe']")[0];
+                            if ((string)$membre_id_groupe === $id_utilisateur) {
+                                $est_membre = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($est_membre) {
+                        echo "<div style='padding: 10px;'>";
+                        echo "<h4>Membres du groupe : " . htmlspecialchars($groupe->group_name) . "</h4>";
+                        echo "<div style='max-height: 250px; overflow-y: auto;'>";
+
+                        foreach ($groupe->membre_id as $membre_id_groupe) {
+                            $membre = $utilisateurs->xpath("//user[user_id='$membre_id_groupe']")[0];
                             if ($membre) {
                                 $est_admin = (string)$groupe->admin_id === $membre_id_groupe;
                                 $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
                                 $est_coadmin = in_array($membre_id_groupe, $coadmins);
-                                
+
                                 echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
                                 echo "<div>";
-                                echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
+                                echo "<strong>" . htmlspecialchars($membre->username) . "</strong>";
                                 echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
                                 echo "</div>";
                                 echo "<div>";
@@ -352,7 +370,7 @@ switch($action){
                                 echo "</div>";
                             }
                         }
-                        
+
                         echo "</div>";
                         echo "</div>";
                     } else {
@@ -366,151 +384,213 @@ switch($action){
             }
             exit;
 
-        case 'obtenir_membres_groupe':
-            if (isset($_GET['group_id'])) {
-                $group_id = htmlspecialchars($_GET['group_id']);
+        if (isset($_GET['group_id'])) {
+            $group_id = htmlspecialchars($_GET['group_id']);
+            
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
+            if ($groupe) {
                 
-                // Vérifier que le groupe existe
-                $groupe = $groupes->xpath("//group[id='$group_id']")[0];
+                // Vérifier que l'utilisateur est membre du groupe
+                $est_membre = ((string)$groupe->admin_id === $id_utilisateur);
+                if (!$est_membre) {
+                    foreach ($groupe->membre_id as $membre_id_groupe) {
+                        if ((string)$membre_id_groupe === $id_utilisateur) {
+                            $est_membre = true;
+                            break;
+                        }
+                    }
+                }
+
                 
-                if ($groupe) {
-                    // Vérifier que l'utilisateur est admin ou coadmin
-                    $est_admin = (string)$groupe->admin_id === $id_utilisateur;
-                    $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
-                    $est_coadmin = in_array($id_utilisateur, $coadmins);
+                if ($est_membre) {
+                    echo "<div style='padding: 10px;'>";
+                    echo "<h4>Membres du groupe : " . htmlspecialchars($groupe->group_name) . "</h4>";
+                    echo "<div style='max-height: 250px; overflow-y: auto;'>";
                     
-                    if ($est_admin || $est_coadmin) {
-                        echo "<div style='padding: 10px;'>";
+                    foreach ($groupe->membre_id as $membre_id_groupe) {
+                        $membre = $utilisateurs->xpath("//user[user_id='$membre_id_groupe']")[0];
+                        if ($membre) {
+                            $est_admin = (string)$groupe->admin_id === $membre_id_groupe;
+                            $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
+                            $est_coadmin = in_array($membre_id_groupe, $coadmins);
+                            
+                            echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
+                            echo "<div>";
+                            echo "<strong>" . htmlspecialchars($membre->username) . "</strong>";
+                            echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
+                            echo "</div>";
+                            echo "<div>";
+                            if ($est_admin) {
+                                echo "<span style='background: #28a745; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Admin</span>";
+                            } elseif ($est_coadmin) {
+                                echo "<span style='background: #ffc107; color: black; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Co-Admin</span>";
+                            } else {
+                                echo "<span style='background: #6c757d; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px;'>Membre</span>";
+                            }
+                            echo "</div>";
+                            echo "</div>";
+                        }
+                    }
+                    
+                    echo "</div>";
+                    echo "</div>";
+                } else {
+                    echo "<p>Vous n'êtes pas membre de ce groupe.</p>";
+                }
+            } else {
+                echo "<p>Groupe introuvable.</p>";
+            }
+        } else {
+            echo "<p>ID du groupe manquant.</p>";
+        }
+        exit;
+
+    case 'obtenir_membres_groupe':
+        if (isset($_GET['group_id'])) {
+            $group_id = htmlspecialchars($_GET['group_id']);
+            
+            // Vérifier que le groupe existe
+            $groupe = $groupes->xpath("//group[group_id='$group_id']")[0];
+            
+            if ($groupe) {
+                // Vérifier que l'utilisateur est admin ou coadmin
+                $est_admin = (string)$groupe->admin_id === $id_utilisateur;
+                $coadmins = isset($groupe->coadmins) ? explode(',', (string)$groupe->coadmins) : [];
+                $est_coadmin = in_array($id_utilisateur, $coadmins);
+                
+                if ($est_admin || $est_coadmin) {
+                    echo "<div style='padding: 10px;'>";
+                    
+                    // Pour la gestion des co-admins
+                    if (isset($_GET['action_type']) && $_GET['action_type'] === 'coadmin') {
+                        echo "<h4>Gérer les co-admins</h4>";
+                        echo "<div style='max-height: 300px; overflow-y: auto;'>";
                         
-                        // Pour la gestion des co-admins
-                        if (isset($_GET['action_type']) && $_GET['action_type'] === 'coadmin') {
-                            echo "<h4>Gérer les co-admins</h4>";
-                            echo "<div style='max-height: 300px; overflow-y: auto;'>";
-                            
-                            foreach ($groupe->membre_id as $membre_id) {
-                                if ((string)$membre_id !== $id_utilisateur) { // Ne pas afficher l'admin principal
-                                    $membre = $utilisateurs->xpath("//user[id='$membre_id']")[0];
-                                    if ($membre) {
-                                        $est_coadmin = in_array($membre_id, $coadmins);
-                                        
-                                        echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
-                                        echo "<div>";
-                                        echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
-                                        echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
-                                        echo "</div>";
-                                        echo "<div>";
-                                        if ($est_coadmin) {
-                                            echo "<form method='post' action='../api.php' style='display: inline;'>";
-                                            echo "<input type='hidden' name='action' value='retirer_coadmin'>";
-                                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                                            echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
-                                            echo "<button type='submit' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer co-admin</button>";
-                                            echo "</form>";
-                                        } else {
-                                            echo "<form method='post' action='../api.php' style='display: inline;'>";
-                                            echo "<input type='hidden' name='action' value='ajouter_coadmin'>";
-                                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                                            echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
-                                            echo "<button type='submit' style='background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Ajouter co-admin</button>";
-                                            echo "</form>";
-                                        }
-                                        echo "</div>";
-                                        echo "</div>";
+                        foreach ($groupe->membre_id as $membre_id) {
+                            if ((string)$membre_id !== $id_utilisateur) { // Ne pas afficher l'admin principal
+                                $membre = $utilisateurs->xpath("//user[user_id='$membre_id']")[0];
+                                if ($membre) {
+                                    $est_coadmin = in_array($membre_id, $coadmins);
+                                    
+                                    echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
+                                    echo "<div>";
+                                    echo "<strong>" . htmlspecialchars($membre->username) . "</strong>";
+                                    echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
+                                    echo "</div>";
+                                    echo "<div>";
+                                    if ($est_coadmin) {
+                                        echo "<form method='post' action='../api.php' style='display: inline;'>";
+                                        echo "<input type='hidden' name='action' value='retirer_coadmin'>";
+                                        echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                                        echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
+                                        echo "<button type='submit' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer co-admin</button>";
+                                        echo "</form>";
+                                    } else {
+                                        echo "<form method='post' action='../api.php' style='display: inline;'>";
+                                        echo "<input type='hidden' name='action' value='ajouter_coadmin'>";
+                                        echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                                        echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
+                                        echo "<button type='submit' style='background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Ajouter co-admin</button>";
+                                        echo "</form>";
                                     }
+                                    echo "</div>";
+                                    echo "</div>";
                                 }
                             }
-                            
-                            echo "</div>";
-                        }
-                        // Pour le retrait de membres
-                        elseif (isset($_GET['action_type']) && $_GET['action_type'] === 'remove') {
-                            echo "<h4>Sélectionner un membre à retirer</h4>";
-                            echo "<div style='max-height: 300px; overflow-y: auto;'>";
-                            
-                            foreach ($groupe->membre_id as $membre_id) {
-                                if ((string)$membre_id !== $id_utilisateur) { // Ne pas pouvoir se retirer soi-même
-                                    $membre = $utilisateurs->xpath("//user[id='$membre_id']")[0];
-                                    if ($membre) {
-                                        $est_admin = (string)$groupe->admin_id === $membre_id;
-                                        
-                                        echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
-                                        echo "<div>";
-                                        echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
-                                        echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
-                                        if ($est_admin) {
-                                            echo "<br><small style='color: #dc3545;'>⚠️ Admin principal - ne peut pas être retiré</small>";
-                                        }
-                                        echo "</div>";
-                                        echo "<div>";
-                                        if (!$est_admin) {
-                                            echo "<form method='post' action='../api.php' style='display: inline;'>";
-                                            echo "<input type='hidden' name='action' value='retirer_membre'>";
-                                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                                            echo "<input type='hidden' name='membre_id' value='" . htmlspecialchars($membre_id) . "'>";
-                                            echo "<button type='submit' onclick='return confirm(\"Retirer " . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . " du groupe ?\")' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer</button>";
-                                            echo "</form>";
-                                        }
-                                        echo "</div>";
-                                        echo "</div>";
-                                    }
-                                }
-                            }
-                            
-                            echo "</div>";
-                        }
-                        else {
-                            echo "<h4>Gérer les co-admins</h4>";
-                            echo "<div style='max-height: 300px; overflow-y: auto;'>";
-                            
-                            foreach ($groupe->membre_id as $membre_id) {
-                                if ((string)$membre_id !== $id_utilisateur) { // Ne pas afficher l'admin principal
-                                    $membre = $utilisateurs->xpath("//user[id='$membre_id']")[0];
-                                    if ($membre) {
-                                        $est_coadmin = in_array($membre_id, $coadmins);
-                                        
-                                        echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
-                                        echo "<div>";
-                                        echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
-                                        echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
-                                        echo "</div>";
-                                        echo "<div>";
-                                        if ($est_coadmin) {
-                                            echo "<form method='post' action='../api.php' style='display: inline;'>";
-                                            echo "<input type='hidden' name='action' value='retirer_coadmin'>";
-                                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                                            echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
-                                            echo "<button type='submit' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer co-admin</button>";
-                                            echo "</form>";
-                                        } else {
-                                            echo "<form method='post' action='../api.php' style='display: inline;'>";
-                                            echo "<input type='hidden' name='action' value='ajouter_coadmin'>";
-                                            echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                                            echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
-                                            echo "<button type='submit' style='background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Ajouter co-admin</button>";
-                                            echo "</form>";
-                                        }
-                                        echo "</div>";
-                                        echo "</div>";
-                                    }
-                                }
-                            }
-                            
-                            echo "</div>";
                         }
                         
                         echo "</div>";
-                    } else {
-                        echo "<p>Vous n'avez pas les permissions pour gérer ce groupe.</p>";
                     }
+                    // Pour le retrait de membres
+                    elseif (isset($_GET['action_type']) && $_GET['action_type'] === 'remove') {
+                        echo "<h4>Sélectionner un membre à retirer</h4>";
+                        echo "<div style='max-height: 300px; overflow-y: auto;'>";
+                        
+                        foreach ($groupe->membre_id as $membre_id) {
+                            if ((string)$membre_id !== $id_utilisateur) { // Ne pas pouvoir se retirer soi-même
+                                $membre = $utilisateurs->xpath("//user[id='$membre_id']")[0];
+                                if ($membre) {
+                                    $est_admin = (string)$groupe->admin_id === $membre_id;
+                                    
+                                    echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
+                                    echo "<div>";
+                                    echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
+                                    echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
+                                    if ($est_admin) {
+                                        echo "<br><small style='color: #dc3545;'>⚠️ Admin principal - ne peut pas être retiré</small>";
+                                    }
+                                    echo "</div>";
+                                    echo "<div>";
+                                    if (!$est_admin) {
+                                        echo "<form method='post' action='../api.php' style='display: inline;'>";
+                                        echo "<input type='hidden' name='action' value='retirer_membre'>";
+                                        echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                                        echo "<input type='hidden' name='membre_id' value='" . htmlspecialchars($membre_id) . "'>";
+                                        echo "<button type='submit' onclick='return confirm(\"Retirer " . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . " du groupe ?\")' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer</button>";
+                                        echo "</form>";
+                                    }
+                                    echo "</div>";
+                                    echo "</div>";
+                                }
+                            }
+                        }
+                        
+                        echo "</div>";
+                    }
+                    else {
+                        echo "<h4>Gérer les co-admins</h4>";
+                        echo "<div style='max-height: 300px; overflow-y: auto;'>";
+                        
+                        foreach ($groupe->membre_id as $membre_id) {
+                            if ((string)$membre_id !== $id_utilisateur) { // Ne pas afficher l'admin principal
+                                $membre = $utilisateurs->xpath("//user[id='$membre_id']")[0];
+                                if ($membre) {
+                                    $est_coadmin = in_array($membre_id, $coadmins);
+                                    
+                                    echo "<div style='display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee;'>";
+                                    echo "<div>";
+                                    echo "<strong>" . htmlspecialchars($membre->prenom . ' ' . $membre->nom) . "</strong>";
+                                    echo "<br><small>" . htmlspecialchars($membre->telephone) . "</small>";
+                                    echo "</div>";
+                                    echo "<div>";
+                                    if ($est_coadmin) {
+                                        echo "<form method='post' action='../api.php' style='display: inline;'>";
+                                        echo "<input type='hidden' name='action' value='retirer_coadmin'>";
+                                        echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                                        echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
+                                        echo "<button type='submit' style='background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Retirer co-admin</button>";
+                                        echo "</form>";
+                                    } else {
+                                        echo "<form method='post' action='../api.php' style='display: inline;'>";
+                                        echo "<input type='hidden' name='action' value='ajouter_coadmin'>";
+                                        echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
+                                        echo "<input type='hidden' name='coadmins' value='" . htmlspecialchars($membre_id) . "'>";
+                                        echo "<button type='submit' style='background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;'>Ajouter co-admin</button>";
+                                        echo "</form>";
+                                    }
+                                    echo "</div>";
+                                    echo "</div>";
+                                }
+                            }
+                        }
+                        
+                        echo "</div>";
+                    }
+                    
+                    echo "</div>";
                 } else {
-                    echo "<p>Groupe introuvable.</p>";
+                    echo "<p>Vous n'avez pas les permissions pour gérer ce groupe.</p>";
                 }
             } else {
-                echo "<p>ID du groupe manquant.</p>";
+                echo "<p>Groupe introuvable.</p>";
             }
-            exit;
+        } else {
+            echo "<p>ID du groupe manquant.</p>";
+        }
+        exit;
 
-        case 'ajouter_membre':
+    case 'ajouter_membre':
             if (isset($_POST['group_id'], $_POST['id_nouveau_membre'])) {
                 $group_id = htmlspecialchars($_POST['group_id']);
                 $id_nouveau_membre = htmlspecialchars($_POST['id_nouveau_membre']);

@@ -278,7 +278,7 @@
                             }
                             
                             if ($est_admin || $est_membre) {
-                                $messages_groupe = $messages->xpath("//message[recipient_group='{$groupe->id}']");
+                                $messages_groupe = $messages->xpath("//message[recipient_group='{$groupe->group_id}']");
                                 $dernier_message = null;
                                 if (!empty($messages_groupe)) {
                                     usort($messages_groupe, function($a, $b) {
@@ -706,7 +706,7 @@
                                 if (!empty($utilisateur_contact)) {
                                     $utilisateur_contact = $utilisateur_contact[0];
                                     echo "<label class='member-checkbox'>";
-                                    echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->id) . "'>";
+                                    echo "<input type='checkbox' name='ids_membres[]' value='" . htmlspecialchars($utilisateur_contact->user_id) . "'>";
                                     echo "<span>" . htmlspecialchars($contact->contact_name) . "</span>";
                                     echo "</label>";
                                 }
@@ -742,8 +742,21 @@
                 <div class="form-actions">
                     <button type="button" onclick="fermerModalMembresGroupe()" class="modern-btn btn-secondary">
                         <span>❌</span> Fermer
-                    </button>
+                    </button><button onclick="afficherModalMembresGroupe('<?php echo $groupe->group_id; ?>')">Voir membres</button>
+
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal pour les actions de groupe -->
+    <div id="groupActionsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="groupActionsTitle">Actions de groupe</h3>
+                <button type="button" onclick="closeGroupActionsModal()" class="modal-close">&times;</button>
+            </div>
+            <div id="groupActionsContent" class="modal-body">
+                <!-- Le contenu sera chargé dynamiquement -->
             </div>
         </div>
     </div>

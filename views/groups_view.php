@@ -65,7 +65,7 @@
                 <div class="group-meta"><?php echo $nombre_membres; ?> membres</div>
             </div>
             <div class="group-actions">
-                <select class="group-action-select" onchange="gererActionGroupeSelect(this, '<?php echo $groupe->id; ?>')">
+                <select class="group-action-select" onchange="gererActionGroupeSelect(this, '<?php echo $groupe->group_id; ?>')">
                     <option value="">Actions</option>
                     <option value="ouvrir_conversation">Ouvrir la conversation</option>
                     <option value="lister_membres">Lister les membres</option>

@@ -285,7 +285,92 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("formulaireCreationGroupe")
     if (form) form.reset()
   }
-  
+function afficherActionsGroupe(idGroupe, nomGroupe, estAdmin, estCoAdmin) {
+    const modal = document.getElementById('groupActionsModal');
+    const titre = document.getElementById('groupActionsTitle');
+    const contenu = document.getElementById('groupActionsContent');
+    
+    titre.textContent = `Actions - ${nomGroupe}`;
+    
+    let actionsHtml = `
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <a href="?conversation=groupe:${idGroupe}&tab=discussions" class="modern-btn btn-primary" style="text-decoration: none; text-align: center;">
+                <span>💬</span>
+                Ouvrir la conversation
+            </a>
+    `;
+    
+    if (estAdmin || estCoAdmin) {
+        actionsHtml += `
+            <button type="button" onclick="listerMembresGroupe('${idGroupe}', '${nomGroupe}')" class="modern-btn btn-secondary">
+                <span>👥</span>
+                Lister les membres
+            </button>
+        `;
+    }
+    
+    if (estAdmin) {
+        actionsHtml += `
+            <button type="button" onclick="gererCoAdmins('${idGroupe}', '${nomGroupe}')" class="modern-btn btn-secondary">
+                <span>👑</span>
+                Gérer les co-admins
+            </button>
+            <button type="button" onclick="retirerMembreGroupe('${idGroupe}', '${nomGroupe}')" class="modern-btn btn-warning">
+                <span>➖</span>
+                Retirer un membre
+            </button>
+        `;
+    }
+    
+    actionsHtml += `
+        </div>
+    `;
+    
+    contenu.innerHTML = actionsHtml;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function fermerModalActionsGroupe() {
+    document.getElementById('groupActionsModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+  function listerMembresGroupe(idGroupe, nomGroupe) {
+    // Charger les données du groupe via AJAX ou afficher dans un modal
+    const modal = document.getElementById('groupActionsModal');
+    const titre = document.getElementById('groupActionsTitle');
+    const contenu = document.getElementById('groupActionsContent');
+    
+    titre.textContent = `Membres - ${nomGroupe}`;
+    
+    // Simuler le chargement des membres (en réalité, on ferait un appel AJAX)
+    let membresHtml = `
+        <div style="max-height: 300px; overflow-y: auto;">
+            <h4>Liste des membres du groupe</h4>
+            <div id="membersList">
+                <p>Chargement des membres...</p>
+            </div>
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="button" onclick="fermerModalActionsGroupe()" class="modern-btn btn-secondary">
+                <span>❌</span>
+                Fermer
+            </button>
+        </div>
+    `;
+    
+    contenu.innerHTML = membresHtml;
+    
+    // Charger les membres via AJAX
+    fetch(`../api.php?action=lister_membres`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('membersList').innerHTML = data;
+        })
+        .catch(error => {
+            document.getElementById('membersList').innerHTML = '<p>Erreur lors du chargement des membres.</p>';
+        });
+}
   function gererActionGroupeSelect(select, idGroupe) {
     const action = select.value
     if (!action) return
@@ -297,6 +382,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "?conversation=groupe:" + idGroupe + "&tab=groups"
         break
       case "lister_membres":
+        // listerMembresGroupe(idGroupe, nomGroupe);
         afficherModalMembresGroupe(idGroupe)
         break
       case "gerer_coadmins":
@@ -317,27 +403,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  function afficherModalMembresGroupe(idGroupe) {
-    const modal = document.getElementById("groupMembersModal")
-    const titre = document.getElementById("groupMembersTitle")
-    const contenu = document.getElementById("groupMembersContent")
-  
-    titre.textContent = "Membres du groupe"
-    contenu.innerHTML = "<p>Chargement des membres...</p>"
-  
-    modal.style.display = "flex"
-    document.body.style.overflow = "hidden"
-  
+function afficherModalMembresGroupe(idGroupe) {
+    console.log("ID du groupe reçu :", idGroupe);
+
+    const modal = document.getElementById("groupMembersModal");
+    const titre = document.getElementById("groupMembersTitle");
+    const contenu = document.getElementById("groupMembersContent");
+
+    titre.textContent = "Membres du groupe";
+    contenu.innerHTML = "<p>Chargement des membres...</p>";
+
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+
     // Charger les membres via AJAX
-    fetch(`../api.php?action=list_members&id_group=${idGroupe}`)
-      .then((response) => response.text())
-      .then((data) => {
-        contenu.innerHTML = data
-      })
-      .catch((error) => {
-        contenu.innerHTML = "<p>Erreur lors du chargement des membres.</p>"
-      })
-  }
+    fetch(`../api.php?action=lister_membres&group_id=${idGroupe}`)
+        .then((response) => {
+            console.log("URL fetch :", response.url);
+            return response.text();
+        })
+        .then((data) => {
+            contenu.innerHTML = data;
+        })
+        .catch((error) => {
+            contenu.innerHTML = "<p>Erreur lors du chargement des membres.</p>";
+        });
+}
   
   function fermerModalMembresGroupe() {
     closeModal("groupMembersModal")
