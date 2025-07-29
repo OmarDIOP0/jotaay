@@ -186,7 +186,7 @@ switch($action){
                             echo "<form method='POST' action='../api.php' style='margin-top: 5px;'>";
                             echo "<input type='hidden' name='action' value='retirer_membre'>";
                             echo "<input type='hidden' name='group_id' value='" . htmlspecialchars($group_id) . "'>";
-                            echo "<input type='hidden' name='membre_id' value='" . htmlspecialchars($membre_id) . "'>";
+                            echo "<input type='hidden' name='membre_id' value='" . htmlspecialchars($user_id) . "'>";
                             echo "<button type='submit' class='btn btn-sm btn-danger'>Retirer</button>";
                             echo "</form>";
                         }

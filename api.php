@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
 
     $contact_actions = ['ajouter_contact', 'supprimer_contact', 'modifier_contact', 'lister_contacts'];
-    $group_actions   = ['creer_groupe', 'supprimer_groupe','ajouter_membre', 'supprimer_membre','ajouter_coadmin', 'retirer_coadmin', 'quitter_groupe', 'lister_membres', 'obtenir_membres_groupe'];
+    $group_actions   = ['creer_groupe', 'supprimer_groupe','ajouter_membre', 'retirer_membre','ajouter_coadmin', 'retirer_coadmin', 'quitter_groupe', 'lister_membres', 'obtenir_membres_groupe'];
     $message_actions = ['envoyer_message', 'send_message'];
     $profil_actions = ['mettre_a_jour_profil'];
 
